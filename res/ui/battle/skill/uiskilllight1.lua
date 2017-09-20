@@ -38,12 +38,11 @@ local Node=cc.Node:create()
 Node:setName("Node")
 
 --Create spr_light
-local spr_light = cc.Sprite:create("battle/effect/proptips_09.png")
+local spr_light = cc.Sprite:create("battle/effect/proptips_00.png")
 spr_light:setName("spr_light")
 spr_light:setTag(2282)
 spr_light:setCascadeColorEnabled(true)
 spr_light:setCascadeOpacityEnabled(true)
-spr_light:setOpacity(0)
 layout = ccui.LayoutComponent:bindLayoutComponent(spr_light)
 layout:setPositionPercentXEnabled(true)
 layout:setPositionPercentYEnabled(true)
