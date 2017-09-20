@@ -38,6 +38,22 @@ void NetsManager::start(Layer *pNetsLayer)
 
 void NetsManager::initNetsPool()
 {
+// 	for (int i = 930000001; i < 930000010; i++)
+// 	{
+// 		_netsPool[Value(i).asString()] = Array::create();
+// 		_netsPool[Value(i).asString()]->retain();
+// 		for (int j = 0; j < 5; ++j)
+// 		{
+// 			
+// 			Nets* nets = Nets::create();
+// 			nets->initSprite(Value(i).asString());
+// 			nets->retain();
+// 			_netsPool[Value(i).asString()]->addObject(nets);
+// 			_pNetsLayer->addChild(nets);
+// 		}
+// 		
+// 	}
+
 	TableMap& tm = ParseGameData::getInstance()->getTabMap("cannonoutlook");
 	TableMap::iterator it = tm.begin();
 	while (it != tm.end()) {
@@ -48,7 +64,7 @@ void NetsManager::initNetsPool()
 			continue;
 		}
 		int i = fm["id"].asInt();
-		//log("cannon out look id:%d size:%d", i, tm.size());
+		log("cannon out look id:%d size:%d", i, tm.size());
 		_netsPool[Value(i).asString()] = Array::create();
 		_netsPool[Value(i).asString()]->retain();
 		for (int j = 0; j < 5; ++j)

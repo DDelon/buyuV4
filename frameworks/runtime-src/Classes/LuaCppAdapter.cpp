@@ -163,7 +163,6 @@ void LuaCppAdapter::startGame(Layer *pManagerLayer, Layer *pFishLayer, ValueMap 
 // 		FishFrameManager::getInstance()->getFishLayer()->addChild(pFish1);
 	}
 
-
 	//ÕÙ»½Óã
 	FishFrameManager::getInstance()->addCalledFish(calledFishes);
 	
@@ -1605,6 +1604,10 @@ ValueMap LuaCppAdapter::luaUseCppFun(ValueMap data)
 		map["net_res"] = GAMEVALUE_STRING("cannonoutlook", id, "net_res");
 		map["net_radius"] = GAMEVALUE_STRING("cannonoutlook", id, "net_radius");
 		return map;
+	}
+	else if (funName == "setForgedChange")
+	{
+
 	}
 	else if (funName == "getForgedChangeData")
 	{
