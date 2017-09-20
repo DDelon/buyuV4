@@ -26,7 +26,6 @@ LoginLayer.RESOURCE_BINDING  = {
 }
 
 function LoginLayer:onCreate(...)
-    FishGI.CommonLayer:addLayerToParent(self)
     self.text_notice:setString(FishGF.getChByIndex(800000017))
     self.text_notice:setScale(self.scaleMin_)
     local ver = "Ver"..table.concat(require("version"),".").."("..CHANNEL_ID..")";
@@ -107,9 +106,7 @@ function LoginLayer:onCreate(...)
 end
 
 function LoginLayer:onEnter( )
-    -- if FishGI.GAME_STATE ~= 2 then
-    --     FishGI.AudioControl:playLayerBgMusic()
-    -- end
+    FishGI.CommonLayer:addLayerToParent(self)
     FishGI.isLogin = false
     FishGI.AudioControl:playLayerBgMusic()
     FishGI.CIRCLE_COUNT = 0

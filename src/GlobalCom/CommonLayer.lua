@@ -8,11 +8,11 @@ end
 
 --0.登录   1.大厅   2.普通场   3.朋友场
 CommonLayer.layerList  = {  
-    { ["layerName"] = "uiShopLayer",["order"] = FishCD.ORDER_LAYER_TRUE,["isAutoHide"] = 0,["showScene"] = {1,2,3}}, 
-    { ["layerName"] = "uiVipRight",["order"] = FishCD.ORDER_LAYER_TRUE,["isAutoHide"] = 0,["showScene"] = {1,2,3}}, 
-    { ["layerName"] = "uiMonthcard",["order"] = FishCD.ORDER_LAYER_TRUE,["isAutoHide"] = 0,["showScene"] = {1,2,3}}, 
-    { ["layerName"] = "uiNoticeLayer",["order"] = FishCD.ORDER_SYSTEM_MESSAGE,["isAutoHide"] = 1,["showScene"] = {0,1,2,3}}, 
-    { ["layerName"] = "uiExitNotice",["order"] = FishCD.ORDER_SYSTEM_MESSAGE+1,["isAutoHide"] = 1,["showScene"] = {0,1,2,3}}, 
+    { ["layerName"] = "uiShopLayer",["order"] = FishCD.ORDER_LAYER_TRUE,["isAutoHide"] = 0,["noShowScene"] = {0}}, 
+    { ["layerName"] = "uiVipRight",["order"] = FishCD.ORDER_LAYER_TRUE,["isAutoHide"] = 0,["noShowScene"] = {0}}, 
+    { ["layerName"] = "uiMonthcard",["order"] = FishCD.ORDER_LAYER_TRUE,["isAutoHide"] = 0,["noShowScene"] = {0}}, 
+    { ["layerName"] = "uiNoticeLayer",["order"] = FishCD.ORDER_SYSTEM_MESSAGE,["isAutoHide"] = 0,["noShowScene"] = {}}, 
+    { ["layerName"] = "uiExitNotice",["order"] = FishCD.ORDER_SYSTEM_MESSAGE+1,["isAutoHide"] = 1,["noShowScene"] = {}}, 
 }
 
 function CommonLayer:init()
@@ -86,7 +86,7 @@ function CommonLayer:getAllComLayer()
     return result
 end
 
-function CommonLayer:addOneLayerToParent(layerName,parent,parent2,order,isShow)
+function CommonLayer:addOneLayerToParent(layerName,parent,parent2,order,isShow,isAutoHide)
     print("CommonLayer:addOneLayerToParent----------------------------------------------------------------")
     if self[layerName] == nil then
         self:initComLayer()
@@ -102,7 +102,7 @@ function CommonLayer:addOneLayerToParent(layerName,parent,parent2,order,isShow)
         parent2[layerName] = self[layerName]
     end
     parent:addChild(self[layerName],order)
-    if not isShow then
+    if not isShow or isAutoHide == 1 then
         self[layerName]:hideLayer(false)
     end
     
@@ -112,22 +112,21 @@ function CommonLayer:addLayerToParent(parent,parent2)
     print("CommonLayer:initComLayer----------------------------------------------------------------")
     local curScene = cc.Director:getInstance():getRunningScene();
     local sceneName = curScene.sceneName
-    local scengtype = 0
+    local scenetype = 0
     if sceneName == "login" then
-        scengtype = 0
+        scenetype = 0
     elseif sceneName == "hall" then
-        scengtype = 1
+        scenetype = 1
     elseif sceneName == "game" then
-        scengtype = 2
+        scenetype = 2
     end
     for k,v in pairs(self.layerList) do
-        local isHow = false
-        for k1,v1 in pairs(v.showScene) do
-            if v1 == scengtype then
-                isHow = true
-            end
+        local isShow = true
+        if scenetype ~= 1 then
+            isShow = false
         end
-        self:addOneLayerToParent(v.layerName,parent,parent2,v.order,v.isAutoHide,isHow)
+
+        self:addOneLayerToParent(v.layerName,parent,parent2,v.order,isShow,v.isAutoHide)
     end 
 end
 
