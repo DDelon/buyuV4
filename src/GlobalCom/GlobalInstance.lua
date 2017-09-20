@@ -23,6 +23,7 @@ FishGI.WebUserData = require("common/WebUserData");
 
 FishGI.FriendRoomManage = require("hall/FriendRoom/FriendRoomManage").new();
 FishGI.GameTableData = require("GlobalCom/GameTableData").create();
+FishGI.CommonLayer = require("GlobalCom/CommonLayer").create();
 
 --GameCenterSDK
 if FishGF.isThirdSdk() then

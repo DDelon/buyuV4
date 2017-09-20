@@ -140,7 +140,7 @@ function Player:shootByDegree(degree)
                     return
                 end
                 dataTab.frameId = backData.frameId
-                --print("------------------------------------------------backData.frameId="..backData.frameId)
+                print("------------------------------------------------backData.frameId="..backData.frameId)
                 dataTab.bulletRate = backData.bulletRate
                 FishGI.bulletCount = FishGI.bulletCount +1
                 FishGI.eventDispatcher:dispatch("sendPlayerFire", dataTab);
