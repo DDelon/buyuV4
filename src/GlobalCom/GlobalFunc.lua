@@ -256,19 +256,12 @@ function FishGF.showMessageLayer(messageType,strMsg,callback,scene,strHook)
     if curScene == nil or type(curScene) == "number" then
         return
     end
-    
-    local noticeType = curScene:getChildByName("MessageDialog")
-    if noticeType == nil then
-        noticeType = require("Message/MessageDialog").create()
-        noticeType:setData(messageType,strMsg,callback,strHook)
-        noticeType:setName("MessageDialog")
-        curScene:addChild(noticeType,FishCD.ORDER_SYSTEM_MESSAGE)
-        noticeType:showLayer() 
-        noticeType:setPosition(cc.p(cc.Director:getInstance():getWinSize().width/2,cc.Director:getInstance():getWinSize().height/2))
-    else
-        noticeType:setData(messageType,strMsg,callback,strHook)
-        if not noticeType["isShow"] then
-            noticeType:showLayer() 
+    local uiNoticeLayer = FishGI.CommonLayer:getComLayer("uiNoticeLayer")
+    if uiNoticeLayer ~= nil then
+        uiNoticeLayer:setData(messageType,strMsg,callback,strHook)
+        local isShow = uiNoticeLayer["isShow"]
+        if isShow == nil or isShow == false then
+            uiNoticeLayer:showLayer() 
         end
     end
 end
@@ -279,18 +272,12 @@ function FishGF.showExitMessage(strMsg,callback)
     if curScene == nil or type(curScene) == "number" then
         return
     end
-    local ExitMessage = curScene:getChildByName("ExitMessage")
-    if ExitMessage == nil then
-        ExitMessage = require("Message/MessageDialog").create()
-        ExitMessage:setData(FishCD.MODE_MIDDLE_OK_CLOSE,strMsg,callback)
-        ExitMessage:setName("ExitMessage")
-        curScene:addChild(ExitMessage,FishCD.ORDER_SYSTEM_MESSAGE+1)
-        ExitMessage:showLayer() 
-        ExitMessage:setPosition(cc.p(cc.Director:getInstance():getWinSize().width/2,cc.Director:getInstance():getWinSize().height/2))
-    else
-        ExitMessage:setData(FishCD.MODE_MIDDLE_OK_CLOSE,strMsg,callback)
-        if not ExitMessage["isShow"] then
-            ExitMessage:showLayer() 
+    local uiExitNotice = FishGI.CommonLayer:getComLayer("uiExitNotice")
+    if uiExitNotice ~= nil then
+        uiExitNotice:setData(FishCD.MODE_MIDDLE_OK_CLOSE,strMsg,callback)
+        local isShow = uiExitNotice["isShow"]
+        if isShow == nil or isShow == false then
+            uiExitNotice:showLayer() 
         end
     end
 end

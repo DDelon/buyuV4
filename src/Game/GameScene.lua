@@ -292,7 +292,7 @@ end
 
 function GameScene:onEnter( )
     print("------GameScene:onEnter--")
-    FishGI.CommonLayer:addlayerToParent(self)
+    FishGI.CommonLayer:addLayerToParent(self)
 
     FishGI.GameTableData:clearGameTable(2)
     FishGMF.setGameType(0)

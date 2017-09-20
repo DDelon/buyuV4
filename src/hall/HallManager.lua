@@ -297,7 +297,7 @@ end
 
 function HallManager:onEnter( )
     print("------------HallLayer:onEnter--")
-    FishGI.CommonLayer:addlayerToParent(self)
+    FishGI.CommonLayer:addLayerToParent(self)
     FishGF.waitNetManager(false,nil,"exitGame")
     FishGI.AudioControl:playLayerBgMusic()
 	

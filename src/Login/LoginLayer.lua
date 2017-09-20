@@ -26,6 +26,7 @@ LoginLayer.RESOURCE_BINDING  = {
 }
 
 function LoginLayer:onCreate(...)
+    FishGI.CommonLayer:addLayerToParent(self)
     self.text_notice:setString(FishGF.getChByIndex(800000017))
     self.text_notice:setScale(self.scaleMin_)
     local ver = "Ver"..table.concat(require("version"),".").."("..CHANNEL_ID..")";
@@ -66,35 +67,7 @@ function LoginLayer:onCreate(...)
     local function onKeyboardFunc(code, event)
         if code == cc.KeyCode.KEY_BACK then
             FishGI.AudioControl:playEffect("sound/com_btn01.mp3")
-            if FishGF.isThirdSdk() and FishGF.isThirdSdkExit() then
-                local closeCallback = function ( jsons )
-                    log("exit game:" .. jsons)
-                    local result = json.decode(jsons)
-                    if CHANNEL_ID == CHANNEL_ID_LIST.qihu or CHANNEL_ID == CHANNEL_ID_LIST.baidu then
-                        local tag = tonumber(result.resultMsg)
-                        if tag == 2 then
-                            os.exit(0);
-                        end
-                    else
-                        local code = tonumber(result.resultCode)
-                        if code == 0 then
-                            os.exit(0);
-                        end
-                    end
-                end
-
-                FishGI.GameCenterSdk:trySDKGameExit({}, closeCallback)
-
-                return
-            end
-
-            local function callback(sender)
-                local tag = sender:getTag()
-                if tag == 2 then
-                    os.exit(0);
-                end
-            end   
-            FishGF.showMessageLayer(FishCD.MODE_MIDDLE_OK_CLOSE,FishGF.getChByIndex(800000139),callback)
+            self:onClickClose(self)
         end
     end
     local listener = cc.EventListenerKeyboard:create();

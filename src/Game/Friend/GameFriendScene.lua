@@ -121,7 +121,7 @@ end
 
 function GameFriendScene:onEnter()
     print("------GameScene:onEnter--")
-    FishGI.CommonLayer:addlayerToParent(self.uiMainLayer,self)
+    FishGI.CommonLayer:addLayerToParent(self.uiMainLayer,self)
 
     FishGI.GameTableData:clearGameTable(3)
     FishGMF.setGameType(1)
