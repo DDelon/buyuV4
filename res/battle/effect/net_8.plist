@@ -9,73 +9,73 @@
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
-                <string>{-1,1}</string>
+                <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{156,158}</string>
+                <string>{148,150}</string>
                 <key>spriteSourceSize</key>
                 <string>{240,240}</string>
                 <key>textureRect</key>
-                <string>{{239,181},{156,158}}</string>
+                <string>{{1557,1},{148,150}}</string>
                 <key>textureRotated</key>
-                <true/>
+                <false/>
             </dict>
             <key>net_8_01.png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
-                <string>{-1,0}</string>
+                <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{194,196}</string>
+                <string>{186,186}</string>
                 <key>spriteSourceSize</key>
                 <string>{240,240}</string>
                 <key>textureRect</key>
-                <string>{{219,339},{194,196}}</string>
+                <string>{{823,1},{186,186}}</string>
                 <key>textureRotated</key>
-                <true/>
+                <false/>
             </dict>
             <key>net_8_02.png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
-                <string>{-1,1}</string>
+                <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{234,236}</string>
+                <string>{222,222}</string>
                 <key>spriteSourceSize</key>
                 <string>{240,240}</string>
                 <key>textureRect</key>
-                <string>{{1,1},{234,236}}</string>
+                <string>{{1,1},{222,222}}</string>
                 <key>textureRotated</key>
-                <true/>
+                <false/>
             </dict>
             <key>net_8_03.png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
-                <string>{-1,0}</string>
+                <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{204,206}</string>
+                <string>{196,196}</string>
                 <key>spriteSourceSize</key>
                 <string>{240,240}</string>
                 <key>textureRect</key>
-                <string>{{1,453},{204,206}}</string>
+                <string>{{429,1},{196,196}}</string>
                 <key>textureRotated</key>
-                <true/>
+                <false/>
             </dict>
             <key>net_8_04.png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
-                <string>{-1,0}</string>
+                <string>{-1,-3}</string>
                 <key>spriteSize</key>
-                <string>{176,178}</string>
+                <string>{172,172}</string>
                 <key>spriteSourceSize</key>
                 <string>{240,240}</string>
                 <key>textureRect</key>
-                <string>{{239,1},{176,178}}</string>
+                <string>{{1383,1},{172,172}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
@@ -84,43 +84,43 @@
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
-                <string>{-1,0}</string>
+                <string>{0,1}</string>
                 <key>spriteSize</key>
-                <string>{194,196}</string>
+                <string>{184,186}</string>
                 <key>spriteSourceSize</key>
                 <string>{240,240}</string>
                 <key>textureRect</key>
-                <string>{{1,659},{194,196}}</string>
+                <string>{{1011,1},{184,186}}</string>
                 <key>textureRotated</key>
-                <true/>
+                <false/>
             </dict>
             <key>net_8_06.png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
-                <string>{-1,1}</string>
+                <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{214,216}</string>
+                <string>{202,204}</string>
                 <key>spriteSourceSize</key>
                 <string>{240,240}</string>
                 <key>textureRect</key>
-                <string>{{1,237},{214,216}}</string>
+                <string>{{225,1},{202,204}}</string>
                 <key>textureRotated</key>
-                <true/>
+                <false/>
             </dict>
             <key>net_8_07.png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
-                <string>{-1,0}</string>
+                <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{204,204}</string>
+                <string>{194,194}</string>
                 <key>spriteSourceSize</key>
                 <string>{240,240}</string>
                 <key>textureRect</key>
-                <string>{{209,535},{204,204}}</string>
+                <string>{{627,1},{194,194}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
@@ -129,30 +129,30 @@
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
-                <string>{-1,1}</string>
+                <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{194,196}</string>
+                <string>{184,184}</string>
                 <key>spriteSourceSize</key>
                 <string>{240,240}</string>
                 <key>textureRect</key>
-                <string>{{199,741},{194,196}}</string>
+                <string>{{1197,1},{184,184}}</string>
                 <key>textureRotated</key>
-                <true/>
+                <false/>
             </dict>
             <key>net_8_09.png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
-                <string>{-17,-14}</string>
+                <string>{-17,-15}</string>
                 <key>spriteSize</key>
                 <string>{138,110}</string>
                 <key>spriteSourceSize</key>
                 <string>{240,240}</string>
                 <key>textureRect</key>
-                <string>{{1,855},{138,110}}</string>
+                <string>{{1707,1},{138,110}}</string>
                 <key>textureRotated</key>
-                <false/>
+                <true/>
             </dict>
         </dict>
         <key>metadata</key>
@@ -166,9 +166,9 @@
             <key>realTextureFileName</key>
             <string>net_8.pvr.ccz</string>
             <key>size</key>
-            <string>{416,966}</string>
+            <string>{1818,224}</string>
             <key>smartupdate</key>
-            <string>$TexturePacker:SmartUpdate:d98240cfd3f82351eb468375afa517b5:ae240d5652a12933ce76ac18b678c0fb:39fba2b0aae972b122dd8ecf98e4dc81$</string>
+            <string>$TexturePacker:SmartUpdate:dcf84e2106add1e00d7bbb7fa92a02db:4b148b3c4be3d3f9cbe28e3b08f9a697:39fba2b0aae972b122dd8ecf98e4dc81$</string>
             <key>textureFileName</key>
             <string>net_8.pvr.ccz</string>
         </dict>
