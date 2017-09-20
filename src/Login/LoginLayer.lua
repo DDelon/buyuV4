@@ -66,7 +66,7 @@ function LoginLayer:onCreate(...)
     local function onKeyboardFunc(code, event)
         if code == cc.KeyCode.KEY_BACK then
             FishGI.AudioControl:playEffect("sound/com_btn01.mp3")
-            self:onClickClose(self)
+            self:onClickClose(self.btn_close)
         end
     end
     local listener = cc.EventListenerKeyboard:create();
@@ -106,7 +106,9 @@ function LoginLayer:onCreate(...)
 end
 
 function LoginLayer:onEnter( )
-    FishGI.CommonLayer:addLayerToParent(self)
+    -- if FishGI.GAME_STATE ~= 2 then
+    --     FishGI.AudioControl:playLayerBgMusic()
+    -- end
     FishGI.isLogin = false
     FishGI.AudioControl:playLayerBgMusic()
     FishGI.CIRCLE_COUNT = 0
