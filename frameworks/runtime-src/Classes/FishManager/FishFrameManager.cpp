@@ -297,9 +297,9 @@ ValueMap FishFrameManager::dealCollision(CollisionNode *pOther)
 		{
 			Fish *pFish = dynamic_cast<Fish *>(iter);
 			if (pFish && pFish->isAlive()
-				&& pFish->gettFishState() != FishState::DEATH
-				&& pFish->gettFishState() != FishState::FADE
-				&& pFish->gettFishState() != FishState::ACCELERATE
+				&& pFish->getFishState() != FishState::DEATH
+				&& pFish->getFishState() != FishState::FADE
+				&& pFish->getFishState() != FishState::ACCELERATE
 				&& pFish->obbCollisionWithAABB(netRect))
 			{
 				ValueMap fishInfo;
@@ -440,7 +440,7 @@ Fish* FishFrameManager::getLockFishByScore()
 		Fish* fish = dynamic_cast<Fish*>(fishList.at(i));
 		if (fish != nullptr)
 		{
-			if (fish->gettFishState() == 3 || fish->gettFishState() == FishState::FADE)
+			if (fish->getFishState() == 3 || fish->getFishState() == FishState::FADE)
 			{
 				continue;
 			}
@@ -470,7 +470,7 @@ Fish* FishFrameManager::getFishByPos(Vec2 pos)
 		Fish* fish = dynamic_cast<Fish*>(fishList.at(i));
 		if (fish != nullptr)
 		{
-			if (fish->gettFishState() == FishState::DEATH || fish->gettFishState() == FishState::FADE)
+			if (fish->getFishState() == FishState::DEATH || fish->getFishState() == FishState::FADE)
 			{
 				continue;
 			}
@@ -562,9 +562,9 @@ void FishFrameManager::getThunderPool(int bulletRate, std::vector<Fish *> &effec
 		//判断是不是小鱼(除了BOSS、奖金鱼、其他功能鱼 30倍以上的鱼)
 		Fish* fish = dynamic_cast<Fish*>(fishList.at(i));
 		if (fish && fish->isAlive()
-			&& fish->gettFishState() != FishState::DEATH
-			&& fish->gettFishState() != FishState::FADE
-			&& fish->gettFishState() != FishState::ACCELERATE
+			&& fish->getFishState() != FishState::DEATH
+			&& fish->getFishState() != FishState::FADE
+			&& fish->getFishState() != FishState::ACCELERATE
 			&& fish->getTraceType() != 3
 			&& fish->getTraceType() != 5
 			&& fish->getTraceType() != 6
@@ -610,9 +610,9 @@ void FishFrameManager::getSameFishType(int fishType, std::vector<Fish *> &effect
 	{
 		Fish* fish = dynamic_cast<Fish*>(fishList.at(i));
 		if (fish && fish->isAlive()
-			&& fish->gettFishState() != FishState::DEATH
-			&& fish->gettFishState() != FishState::FADE
-			&& fish->gettFishState() != FishState::ACCELERATE)
+			&& fish->getFishState() != FishState::DEATH
+			&& fish->getFishState() != FishState::FADE
+			&& fish->getFishState() != FishState::ACCELERATE)
 		{
 			if (fish->getId() == fishType)
 			{
@@ -633,9 +633,9 @@ void FishFrameManager::getRangeFish(int range, Vec2 pos, std::vector<Fish *> &ef
 	{
 		Fish* fish = dynamic_cast<Fish*>(fishList.at(i));
 		if (fish && fish->isAlive()
-			&& fish->gettFishState() != FishState::DEATH
-			&& fish->gettFishState() != FishState::FADE
-			&& fish->gettFishState() != FishState::ACCELERATE
+			&& fish->getFishState() != FishState::DEATH
+			&& fish->getFishState() != FishState::FADE
+			&& fish->getFishState() != FishState::ACCELERATE
 			&& fish->getTraceType() != 3
 			&& fish->getTraceType() != 5
 			&& fish->getTraceType() != 6
@@ -666,9 +666,9 @@ void FishFrameManager::getNBombRangeFish(int range, Vec2 pos, std::vector<Fish *
 	{
 		Fish* fish = dynamic_cast<Fish*>(fishList.at(i));
 		if (fish && fish->isAlive()
-			&& fish->gettFishState() != FishState::DEATH
-			&& fish->gettFishState() != FishState::FADE
-			&& fish->gettFishState() != FishState::ACCELERATE
+			&& fish->getFishState() != FishState::DEATH
+			&& fish->getFishState() != FishState::FADE
+			&& fish->getFishState() != FishState::ACCELERATE
 			&& fish->getTraceType() != 5
 			&& fish->getTraceType() != 6
 			&& fish->getTraceType() != 7

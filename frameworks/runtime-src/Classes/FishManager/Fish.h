@@ -98,7 +98,7 @@ public:
 	int getId() { return mId; }
 
 	void setFishState(int state);
-	int gettFishState(){ return mFishState; }
+	int getFishState(){ return mFishState; }
 	int getScore(){ return mScore; }
 	int getDeathEffect(){ return mDeathEffect; }
 	int getDropCoin(){ return mCoinNum; }

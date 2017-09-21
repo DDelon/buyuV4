@@ -1484,7 +1484,7 @@ ValueMap LuaCppAdapter::luaUseCppFun(ValueMap data)
 			Vec2 lockPos = aimFish->getLockPosition();
 			map["posX"] = lockPos.x;
 			map["posY"] = lockPos.y;
-			map["state"] = aimFish->gettFishState();
+			map["state"] = aimFish->getFishState();
 		}
 		else
 		{
