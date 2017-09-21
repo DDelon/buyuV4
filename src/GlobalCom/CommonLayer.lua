@@ -8,11 +8,11 @@ end
 
 --0.登录   1.大厅   2.普通场   3.朋友场
 CommonLayer.layerList  = {  
-    { ["layerName"] = "uiShopLayer",["order"] = FishCD.ORDER_LAYER_TRUE,["isAutoHide"] = 0,["noShowScene"] = {0}}, 
-    { ["layerName"] = "uiVipRight",["order"] = FishCD.ORDER_LAYER_TRUE,["isAutoHide"] = 0,["noShowScene"] = {0}}, 
-    { ["layerName"] = "uiMonthcard",["order"] = FishCD.ORDER_LAYER_TRUE,["isAutoHide"] = 0,["noShowScene"] = {0}}, 
-    { ["layerName"] = "uiNoticeLayer",["order"] = FishCD.ORDER_SYSTEM_MESSAGE,["isAutoHide"] = 0,["noShowScene"] = {}}, 
-    { ["layerName"] = "uiExitNotice",["order"] = FishCD.ORDER_SYSTEM_MESSAGE+1,["isAutoHide"] = 1,["noShowScene"] = {}}, 
+    { ["layerName"] = "uiShopLayer",    ["order"] = FishCD.ORDER_LAYER_TRUE,        ["isAutoHide"] = 0,["noShowScene"] = {0}}, 
+    { ["layerName"] = "uiVipRight",     ["order"] = FishCD.ORDER_LAYER_TRUE,        ["isAutoHide"] = 0,["noShowScene"] = {0}}, 
+    { ["layerName"] = "uiMonthcard",    ["order"] = FishCD.ORDER_LAYER_TRUE,        ["isAutoHide"] = 0,["noShowScene"] = {0}}, 
+    { ["layerName"] = "uiNoticeLayer",  ["order"] = FishCD.ORDER_SYSTEM_MESSAGE,    ["isAutoHide"] = 0,["noShowScene"] = {}}, 
+    { ["layerName"] = "uiExitNotice",   ["order"] = FishCD.ORDER_SYSTEM_MESSAGE+1,  ["isAutoHide"] = 1,["noShowScene"] = {}}, 
 }
 
 function CommonLayer:init()

@@ -236,18 +236,8 @@ function FishGF.changePropUnitByID(propId,propCount,isCh)
 end
 
 --大厅中通过id得到道具的目标点 
-function FishGF.getHallPropAimByID(ID)
-    local scaleX_,scaleY_,scaleMin_  = FishGF.getCurScale()
-    local pos = cc.p(0,0)
-    if ID == 1 then
-        pos = cc.p(617.55*scaleX_,677.88*scaleY_)
-    elseif ID == 2 then
-        pos = cc.p(927.51*scaleX_,681.43*scaleY_)
-    else
-        pos = cc.p(66.26*scaleX_,71*scaleY_)
-    end
-
-    return pos
+function FishGF.getHallPropAimByID(propId)
+    return FishGI.hallScene.view:getHallPropAimByID(propId)
 end
 
 --显示系统消息提示框
@@ -560,71 +550,16 @@ function FishGF.getRotateDegreeRadians(dstPos, srcPos)
     return degree, radians;
 end
 
-function FishGF.strSplit(str, sign)
-    local front = 1;
-    local back = 1;
-    local len = string.len(str);
-    local resultTab = {};
-    while true do
-        back = string.find(str, sign, front);
-        local val = string.sub(str,front,back-1);
-        if back == nil then
-            back = 0
-        end
-        front = back+1;
-        table.insert(resultTab, val);
-        if front >= len then
-            break;
-        end
-    end
-    return resultTab;
-end
-
+--裁剪 "0,0,0;0,0,0;"格式的字符窜
 function FishGF.strToVec3(str)
-    local front = 1;
-    local back = 1;
-    local len = string.len(str);
     local pointTab = {};
-
-
-    while true do
-        back = string.find(str, ",", front);
-        local valx = string.sub(str,front,back-1);
-        front = back+1;
-        back = string.find(str, ",", front);
-        local valy = string.sub(str,front,back-1);
-        front = back+1;
-        back = string.find(str, ";", front);
-        local valz = string.sub(str,front,back-1);
-        front = back+1;
-        table.insert(pointTab, cc.vec3(tonumber(valx), tonumber(valy), tonumber(valz)));
-        if back >= len then
-            break;
+    local arr1 = string.split(str,";")
+    for i,v in ipairs(arr1) do
+        local arr2 = string.split(v,",")
+        if #arr2 >1 then
+            table.insert(pointTab, cc.vec3(tonumber(arr2[1]), tonumber(arr2[2]), tonumber(arr2[3])));
         end
     end
-    
-    return pointTab;
-end
-function FishGF.strToVec2(str)
-    local front = 1;
-    local back = 1;
-    local len = string.len(str);
-    local pointTab = {};
-
-
-    while true do
-        back = string.find(str, ",", front);
-        local valx = string.sub(str,front,back-1);
-        front = back+1;
-        back = string.find(str, ";", front);
-        local valy = string.sub(str,front,back-1);
-        front = back+1;
-        table.insert(pointTab, cc.p(tonumber(valx), tonumber(valy)));
-        if back >= len then
-            break;
-        end
-    end
-
     return pointTab;
 end
 
@@ -759,32 +694,6 @@ function FishGF.getFormatTimeBySeconds(seconds)
 
     local time = string.format("%02d:%02d:%02d",clock,minute,second)
     return time;
-end
-
-function FishGF.getPosWithDirectTag(directTag)
-    if directTag == cc.exports.Direct.LEFT_DOWN then
-        --左下
-        return cc.p(cc.exports.gameSceneInstance.visibleSize.width/4, cc.exports.gameSceneInstance.visibleSize.height*0.1);
-    elseif directTag == cc.exports.Direct.RIGHT_DOWN then
-        --右下
-        return cc.p(cc.exports.gameSceneInstance.visibleSize.width*3/4, cc.exports.gameSceneInstance.visibleSize.height*0.1);
-    elseif directTag == cc.exports.Direct.LEFT_UP then
-        --左上
-        return cc.p(cc.exports.gameSceneInstance.visibleSize.width/4, cc.exports.gameSceneInstance.visibleSize.height*0.9);
-    elseif directTag == cc.exports.Direct.RIGHT_UP then
-        --右上
-        return cc.p(cc.exports.gameSceneInstance.visibleSize.width*3/4, cc.exports.gameSceneInstance.visibleSize.height*0.9);
-    end
-end
-
-function FishGF.coordinateTransform(pos, isTransform)
-    local winSize = cc.Director:getInstance():getWinSize();
-    if isTransform then
-        return cc.vec3(tonumber(winSize.width-pos.x), tonumber(winSize.height-pos.y), tonumber(pos.z));
-    else
-        return cc.vec3(tonumber(pos.x), tonumber(pos.y), tonumber(pos.z));
-    end
-    
 end
 
 --延时执行
@@ -1086,6 +995,9 @@ function FishGF.isRechargeSucceed(newData)
 
     local myFishIcon = FishGMF.getPlayerPropData(newData.playerId,FishCD.PROP_TAG_01).realCount
     local myCrystal = FishGMF.getPlayerPropData(newData.playerId,FishCD.PROP_TAG_02).realCount
+    if FishGI.myData == nil then
+        return true
+    end
     local myLeftMonthCardDay = FishGI.myData.leftMonthCardDay
 
     if myFishIcon ~= fishIcon or myCrystal ~= crystal or myLeftMonthCardDay ~= leftMonthCardDay then
