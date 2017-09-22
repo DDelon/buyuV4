@@ -2,6 +2,8 @@
 #define __SKILLLOCKMANAGER_H__
 #include "cocos2d.h"
 #include "ui/CocosGUI.h"
+#include "Fish.h"
+
 USING_NS_CC;
 
 const int chainCount = 8;
@@ -24,12 +26,15 @@ public:
 	void stopMyLock();
 	void updateLock(float dt);
 
-	void setAimFish(int playerId, Fish* aimFish){ mAimFishMap[playerId] = aimFish; };
-	Fish* getAimFish(int playerId){ return mAimFishMap[playerId]; };
+	void setAimFish(int playerId, Fish* aimFish);
+	Fish* getAimFish(int playerId);
 
 	void chooseFishByScore();
 
+	ValueMap setLockData(ValueMap data);
+	bool getIsLock(){ return nIsLock; };
 private:
+	static SkillLockManager *_lockInstance;
 	bool nIsLock;
 	std::map<int, Fish*> mAimFishMap;
 	Layer* mLockLayer;

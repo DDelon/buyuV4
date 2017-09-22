@@ -16,11 +16,11 @@ CommonLayer.layerList  = {
 }
 
 function CommonLayer:init()
-
+    self.scaleX_,self.scaleY_,self.scaleMin_  = FishGF.getCurScale()
 end
 
 function CommonLayer:initComLayer()
-    self.scaleX_,self.scaleY_,self.scaleMin_  = FishGF.getCurScale()
+    
     --商店
     if self.uiShopLayer == nil then
         self.uiShopLayer = require("Shop/Shop").create()
@@ -42,12 +42,24 @@ function CommonLayer:initComLayer()
         self.uiMonthcard:retain()
     end
 
+
+    self:initNotice()
+    for k,v in pairs(self.layerList) do
+        self[v.layerName]:setScale(self.scaleMin_)
+        self[v.layerName]:hideLayer(false)
+    end 
+
+end
+
+function CommonLayer:initNotice()
     --提示框
     if self.uiNoticeLayer == nil then
         self.uiNoticeLayer = require("Message/MessageDialog").create()
         self.uiNoticeLayer:setPosition(cc.p(cc.Director:getInstance():getWinSize().width/2,cc.Director:getInstance():getWinSize().height/2))  
         self.uiNoticeLayer:setName("uiNoticeLayer")
         self.uiNoticeLayer:retain()
+        self.uiNoticeLayer:setScale(self.scaleMin_)
+        self.uiNoticeLayer:hideLayer(false)
     end
 
     --退出提示框
@@ -56,12 +68,9 @@ function CommonLayer:initComLayer()
         self.uiExitNotice:setPosition(cc.p(cc.Director:getInstance():getWinSize().width/2,cc.Director:getInstance():getWinSize().height/2))
         self.uiExitNotice:setName("uiExitNotice")
         self.uiExitNotice:retain()
+        self.uiExitNotice:setScale(self.scaleMin_)
+        self.uiExitNotice:hideLayer(false)
     end
-
-    for k,v in pairs(self.layerList) do
-        self[v.layerName]:setScale(self.scaleMin_)
-        self[v.layerName]:hideLayer(false)
-    end 
 
 end
 
@@ -86,10 +95,10 @@ function CommonLayer:getAllComLayer()
     return result
 end
 
-function CommonLayer:addOneLayerToParent(layerName,parent,parent2,order,isShow,isAutoHide)
+function CommonLayer:addOneLayerToParent(layerName,parent,parent2,order,isAdd,isAutoHide,isShow)
     print("CommonLayer:addOneLayerToParent----------------------------------------------------------------")
-    if self[layerName] == nil then
-        self:initComLayer()
+    if isAdd == false then
+        return
     end
     if self[layerName] == nil then
         return
@@ -102,7 +111,7 @@ function CommonLayer:addOneLayerToParent(layerName,parent,parent2,order,isShow,i
         parent2[layerName] = self[layerName]
     end
     parent:addChild(self[layerName],order)
-    if not isShow or isAutoHide == 1 then
+    if (not isShow) or isAutoHide == 1 then
         self[layerName]:hideLayer(false)
     end
     
@@ -120,13 +129,23 @@ function CommonLayer:addLayerToParent(parent,parent2)
     elseif sceneName == "game" then
         scenetype = 2
     end
+    if scenetype == 0 then
+        self:initNotice()
+    else
+        self:initComLayer()
+    end
     for k,v in pairs(self.layerList) do
+        local isAdd = true
+        for k2,v2 in pairs(v.noShowScene) do
+            if v2 == scenetype then
+                isAdd = false
+            end
+        end
         local isShow = true
-        if scenetype ~= 1 then
+        if scenetype == 0 then
             isShow = false
         end
-
-        self:addOneLayerToParent(v.layerName,parent,parent2,v.order,isShow,v.isAutoHide)
+        self:addOneLayerToParent(v.layerName,parent,parent2,v.order,isAdd,v.isAutoHide,isShow)
     end 
 end
 

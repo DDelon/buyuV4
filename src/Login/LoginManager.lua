@@ -20,6 +20,7 @@ function LoginManager:onEnter()
     print("show message")
     local noDelList = {"doPaySDK"}
     FishGF.clearSwallowLayer(noDelList)
+    FishGI.CommonLayer:addLayerToParent(self)
 end
 
 function LoginManager:init()

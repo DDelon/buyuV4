@@ -101,12 +101,27 @@
         
 --------------------------------
 -- 
+-- @function [parent=#LuaCppAdapter] setLuaNode 
+-- @param self
+-- @param #int type
+-- @param #cc.Node pManagerLayer
+-- @param #map_table data
+-- @return LuaCppAdapter#LuaCppAdapter self (return value: LuaCppAdapter)
+        
+--------------------------------
+-- 
 -- @function [parent=#LuaCppAdapter] getConfigData 
 -- @param self
 -- @param #string configName
 -- @param #string keyID
 -- @param #string keyName
 -- @return string#string ret (return value: string)
+        
+--------------------------------
+-- 
+-- @function [parent=#LuaCppAdapter] loadDataBin 
+-- @param self
+-- @return LuaCppAdapter#LuaCppAdapter self (return value: LuaCppAdapter)
         
 --------------------------------
 -- 
@@ -133,6 +148,7 @@
 -- 
 -- @function [parent=#LuaCppAdapter] getNBombKilledFishes 
 -- @param self
+-- @param #int bombLv
 -- @param #vec2_table pos
 -- @return array_table#array_table ret (return value: array_table)
         

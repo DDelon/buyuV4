@@ -3,6 +3,7 @@
 #include "cocos2d.h"
 #include "ui/CocosGUI.h"
 #include "ParseGameData.h"
+
 USING_NS_CC;
 using namespace std;
 class GameScene;
@@ -112,6 +113,10 @@ public:
 	void loadDataBin();
 
 	int _gameType;
+
+	void setLuaNode(int type,Node *pManagerLayer, ValueMap data);
+
+
 private:
 	//Ë¢ÐÂÊý¾Ý+shoot+hit
 	void updateInline(ValueMap data);

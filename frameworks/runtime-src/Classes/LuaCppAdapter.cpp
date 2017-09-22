@@ -11,6 +11,8 @@
 #include "scripting/lua-bindings/manual/CCLuaEngine.h"
 #include "AudioControl.h"
 #include "Collision/CollisionManager.h"
+#include "SkillLockManager.h"
+
 
 
 extern "C"
@@ -1154,6 +1156,25 @@ cocos2d::ValueMap LuaCppAdapter::myCreateBullet(ValueMap data)
 	}
 	else
 	{
+		int timelineId = 0;
+		int fishArrayId = 0;
+		if (SkillLockManager::getInstance()->getIsLock())
+		{
+			Fish* aimFish = SkillLockManager::getInstance()->getAimFish(playerId);
+			if (aimFish == nullptr)
+			{
+				map["isSucceed"] = 7;
+				return map;
+			}
+			timelineId = aimFish->getTimelineId();
+			fishArrayId = aimFish->getFishArrayId();
+			Node* cannon = BulletManager::getInstance()->getCannon(playerId);
+			map["lockDegree"] = cannon->getRotation() + 90;
+		}
+		map["timelineId"] = timelineId;
+		map["fishArrayId"] = fishArrayId;
+		bulletData["timelineId"] = timelineId;
+		bulletData["fishArrayId"] = fishArrayId;
 		map["isSucceed"] = 0;
 		map["bulletRate"] = roleData->currentGunRate;
 		map["frameId"] = FishFrameManager::getInstance()->getCurrentFrame();
@@ -1828,8 +1849,21 @@ ValueMap LuaCppAdapter::luaUseCppFun(ValueMap data)
 	{
 		AppDelegate::createFile();
 	}
+	else if (funName == "setLockData")
+	{
+		map = SkillLockManager::getInstance()->setLockData(data);
+	}
 
 	return map;
+}
+
+void LuaCppAdapter::setLuaNode(int type, Node *pManagerLayer, ValueMap data)
+{
+	if (type == 1)
+	{
+		SkillLockManager::getInstance()->setLockLayer((Layer*)pManagerLayer);
+		SkillLockManager::getInstance()->initLock();
+	}
 }
 
 

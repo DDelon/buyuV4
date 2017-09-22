@@ -50,4 +50,6 @@ int register_all_LuaCppAdapter(lua_State* tolua_S);
 
 
 
+
+
 #endif // __LuaCppAdapter_h__

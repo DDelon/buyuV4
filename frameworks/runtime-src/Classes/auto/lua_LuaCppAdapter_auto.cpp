@@ -1,4 +1,4 @@
-#include "auto/lua_LuaCppAdapter_auto.hpp"
+#include "lua_LuaCppAdapter_auto.hpp"
 #include "LuaCppAdapter.h"
 #include "scripting/lua-bindings/manual/tolua_fix.h"
 #include "scripting/lua-bindings/manual/LuaBasicConversions.h"
@@ -668,6 +668,62 @@ int lua_LuaCppAdapter_LuaCppAdapter_callLuaFunc(lua_State* tolua_S)
 
     return 0;
 }
+int lua_LuaCppAdapter_LuaCppAdapter_setLuaNode(lua_State* tolua_S)
+{
+    int argc = 0;
+    LuaCppAdapter* cobj = nullptr;
+    bool ok  = true;
+
+#if COCOS2D_DEBUG >= 1
+    tolua_Error tolua_err;
+#endif
+
+
+#if COCOS2D_DEBUG >= 1
+    if (!tolua_isusertype(tolua_S,1,"LuaCppAdapter",0,&tolua_err)) goto tolua_lerror;
+#endif
+
+    cobj = (LuaCppAdapter*)tolua_tousertype(tolua_S,1,0);
+
+#if COCOS2D_DEBUG >= 1
+    if (!cobj) 
+    {
+        tolua_error(tolua_S,"invalid 'cobj' in function 'lua_LuaCppAdapter_LuaCppAdapter_setLuaNode'", nullptr);
+        return 0;
+    }
+#endif
+
+    argc = lua_gettop(tolua_S)-1;
+    if (argc == 3) 
+    {
+        int arg0;
+        cocos2d::Node* arg1;
+        cocos2d::ValueMap arg2;
+
+        ok &= luaval_to_int32(tolua_S, 2,(int *)&arg0, "LuaCppAdapter:setLuaNode");
+
+        ok &= luaval_to_object<cocos2d::Node>(tolua_S, 3, "cc.Node",&arg1, "LuaCppAdapter:setLuaNode");
+
+        ok &= luaval_to_ccvaluemap(tolua_S, 4, &arg2, "LuaCppAdapter:setLuaNode");
+        if(!ok)
+        {
+            tolua_error(tolua_S,"invalid arguments in function 'lua_LuaCppAdapter_LuaCppAdapter_setLuaNode'", nullptr);
+            return 0;
+        }
+        cobj->setLuaNode(arg0, arg1, arg2);
+        lua_settop(tolua_S, 1);
+        return 1;
+    }
+    luaL_error(tolua_S, "%s has wrong number of arguments: %d, was expecting %d \n", "LuaCppAdapter:setLuaNode",argc, 3);
+    return 0;
+
+#if COCOS2D_DEBUG >= 1
+    tolua_lerror:
+    tolua_error(tolua_S,"#ferror in function 'lua_LuaCppAdapter_LuaCppAdapter_setLuaNode'.",&tolua_err);
+#endif
+
+    return 0;
+}
 int lua_LuaCppAdapter_LuaCppAdapter_getConfigData(lua_State* tolua_S)
 {
     int argc = 0;
@@ -720,6 +776,53 @@ int lua_LuaCppAdapter_LuaCppAdapter_getConfigData(lua_State* tolua_S)
 #if COCOS2D_DEBUG >= 1
     tolua_lerror:
     tolua_error(tolua_S,"#ferror in function 'lua_LuaCppAdapter_LuaCppAdapter_getConfigData'.",&tolua_err);
+#endif
+
+    return 0;
+}
+int lua_LuaCppAdapter_LuaCppAdapter_loadDataBin(lua_State* tolua_S)
+{
+    int argc = 0;
+    LuaCppAdapter* cobj = nullptr;
+    bool ok  = true;
+
+#if COCOS2D_DEBUG >= 1
+    tolua_Error tolua_err;
+#endif
+
+
+#if COCOS2D_DEBUG >= 1
+    if (!tolua_isusertype(tolua_S,1,"LuaCppAdapter",0,&tolua_err)) goto tolua_lerror;
+#endif
+
+    cobj = (LuaCppAdapter*)tolua_tousertype(tolua_S,1,0);
+
+#if COCOS2D_DEBUG >= 1
+    if (!cobj) 
+    {
+        tolua_error(tolua_S,"invalid 'cobj' in function 'lua_LuaCppAdapter_LuaCppAdapter_loadDataBin'", nullptr);
+        return 0;
+    }
+#endif
+
+    argc = lua_gettop(tolua_S)-1;
+    if (argc == 0) 
+    {
+        if(!ok)
+        {
+            tolua_error(tolua_S,"invalid arguments in function 'lua_LuaCppAdapter_LuaCppAdapter_loadDataBin'", nullptr);
+            return 0;
+        }
+        cobj->loadDataBin();
+        lua_settop(tolua_S, 1);
+        return 1;
+    }
+    luaL_error(tolua_S, "%s has wrong number of arguments: %d, was expecting %d \n", "LuaCppAdapter:loadDataBin",argc, 0);
+    return 0;
+
+#if COCOS2D_DEBUG >= 1
+    tolua_lerror:
+    tolua_error(tolua_S,"#ferror in function 'lua_LuaCppAdapter_LuaCppAdapter_loadDataBin'.",&tolua_err);
 #endif
 
     return 0;
@@ -902,21 +1005,22 @@ int lua_LuaCppAdapter_LuaCppAdapter_getNBombKilledFishes(lua_State* tolua_S)
     argc = lua_gettop(tolua_S)-1;
     if (argc == 2) 
     {
-		int arg0;
+        int arg0;
         cocos2d::Vec2 arg1;
-		ok &= luaval_to_int32(tolua_S, 2, (int *)&arg0, "LuaCppAdapter:getNBombKilledFishes");
 
-		ok &= luaval_to_vec2(tolua_S, 3, &arg1, "LuaCppAdapter:getNBombKilledFishes");
+        ok &= luaval_to_int32(tolua_S, 2,(int *)&arg0, "LuaCppAdapter:getNBombKilledFishes");
+
+        ok &= luaval_to_vec2(tolua_S, 3, &arg1, "LuaCppAdapter:getNBombKilledFishes");
         if(!ok)
         {
             tolua_error(tolua_S,"invalid arguments in function 'lua_LuaCppAdapter_LuaCppAdapter_getNBombKilledFishes'", nullptr);
             return 0;
         }
-		cocos2d::ValueVector ret = cobj->getNBombKilledFishes(arg0, arg1);
+        cocos2d::ValueVector ret = cobj->getNBombKilledFishes(arg0, arg1);
         ccvaluevector_to_luaval(tolua_S, ret);
         return 1;
     }
-    luaL_error(tolua_S, "%s has wrong number of arguments: %d, was expecting %d \n", "LuaCppAdapter:getNBombKilledFishes",argc, 1);
+    luaL_error(tolua_S, "%s has wrong number of arguments: %d, was expecting %d \n", "LuaCppAdapter:getNBombKilledFishes",argc, 2);
     return 0;
 
 #if COCOS2D_DEBUG >= 1
@@ -1508,55 +1612,6 @@ int lua_LuaCppAdapter_LuaCppAdapter_fishAccelerateOut(lua_State* tolua_S)
 
     return 0;
 }
-
-int lua_LuaCppAdapter_LuaCppAdapter_loadDataBin(lua_State* tolua_S)
-{
-	int argc = 0;
-	LuaCppAdapter* cobj = nullptr;
-	bool ok = true;
-
-#if COCOS2D_DEBUG >= 1
-	tolua_Error tolua_err;
-#endif
-
-
-#if COCOS2D_DEBUG >= 1
-	if (!tolua_isusertype(tolua_S, 1, "LuaCppAdapter", 0, &tolua_err)) goto tolua_lerror;
-#endif
-
-	cobj = (LuaCppAdapter*)tolua_tousertype(tolua_S, 1, 0);
-
-#if COCOS2D_DEBUG >= 1
-	if (!cobj)
-	{
-		tolua_error(tolua_S, "invalid 'cobj' in function 'lua_LuaCppAdapter_LuaCppAdapter_loadDataBin'", nullptr);
-		return 0;
-	}
-#endif
-
-	argc = lua_gettop(tolua_S) - 1;
-	if (argc == 0)
-	{
-		if (!ok)
-		{
-			tolua_error(tolua_S, "invalid arguments in function 'lua_LuaCppAdapter_LuaCppAdapter_loadDataBin'", nullptr);
-			return 0;
-		}
-		cobj->loadDataBin();
-		lua_settop(tolua_S, 1);
-		return 1;
-	}
-	luaL_error(tolua_S, "%s has wrong number of arguments: %d, was expecting %d \n", "LuaCppAdapter:loadDataBin", argc, 0);
-	return 0;
-
-#if COCOS2D_DEBUG >= 1
-tolua_lerror:
-	tolua_error(tolua_S, "#ferror in function 'lua_LuaCppAdapter_LuaCppAdapter_loadDataBin'.", &tolua_err);
-#endif
-
-	return 0;
-}
-
 int lua_LuaCppAdapter_LuaCppAdapter_frameRunning(lua_State* tolua_S)
 {
     int argc = 0;
@@ -1966,7 +2021,9 @@ int lua_register_LuaCppAdapter_LuaCppAdapter(lua_State* tolua_S)
         tolua_function(tolua_S,"callFish",lua_LuaCppAdapter_LuaCppAdapter_callFish);
         tolua_function(tolua_S,"bindUI",lua_LuaCppAdapter_LuaCppAdapter_bindUI);
         tolua_function(tolua_S,"callLuaFunc",lua_LuaCppAdapter_LuaCppAdapter_callLuaFunc);
+        tolua_function(tolua_S,"setLuaNode",lua_LuaCppAdapter_LuaCppAdapter_setLuaNode);
         tolua_function(tolua_S,"getConfigData",lua_LuaCppAdapter_LuaCppAdapter_getConfigData);
+        tolua_function(tolua_S,"loadDataBin",lua_LuaCppAdapter_LuaCppAdapter_loadDataBin);
         tolua_function(tolua_S,"setFishState",lua_LuaCppAdapter_LuaCppAdapter_setFishState);
         tolua_function(tolua_S,"getConfigDataByName",lua_LuaCppAdapter_LuaCppAdapter_getConfigDataByName);
         tolua_function(tolua_S,"removePlayerBullet",lua_LuaCppAdapter_LuaCppAdapter_removePlayerBullet);
@@ -1982,7 +2039,6 @@ int lua_register_LuaCppAdapter_LuaCppAdapter(lua_State* tolua_S)
         tolua_function(tolua_S,"startBullet",lua_LuaCppAdapter_LuaCppAdapter_startBullet);
         tolua_function(tolua_S,"bulletChangeTarget",lua_LuaCppAdapter_LuaCppAdapter_bulletChangeTarget);
         tolua_function(tolua_S,"fishAccelerateOut",lua_LuaCppAdapter_LuaCppAdapter_fishAccelerateOut);
-		tolua_function(tolua_S,"loadDataBin", lua_LuaCppAdapter_LuaCppAdapter_loadDataBin);
         tolua_function(tolua_S,"frameRunning",lua_LuaCppAdapter_LuaCppAdapter_frameRunning);
         tolua_function(tolua_S,"updateThunderRate",lua_LuaCppAdapter_LuaCppAdapter_updateThunderRate);
         tolua_function(tolua_S,"debugLog",lua_LuaCppAdapter_LuaCppAdapter_debugLog);

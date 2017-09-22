@@ -46,6 +46,7 @@ public:
 
 	void addPlayerCannon(int playerId,Node* cannon);
 	void delPlayerCannon(int playerId);
+	Node* getCannon(int playerId);
 
 	//--------------------------Collider-------------------------------------
 	virtual ValueMap dealCollision(CollisionNode *pOther);
@@ -60,7 +61,7 @@ private:
 	void syncOldBullet(ValueVector bulletVec);
 	void updateBullet(float dt);
 
-	Node* getCannon(int playerId);
+	
 private:
 	static BulletManager *_pInstance;
 	int _timelineId;

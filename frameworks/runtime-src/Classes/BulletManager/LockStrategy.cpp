@@ -4,6 +4,7 @@
 #include "FishFrameManager.h"
 #include "PlayerManager.h"
 #include "LuaCppAdapter.h"
+#include "SkillLockManager.h"
 #include <iostream>
 #define FOLLOW_FRAME_INTERVAL 5
 
