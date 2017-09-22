@@ -1432,15 +1432,38 @@ function FishGF.openPortraitWebView(url, title)
     end
 end
 
-function FishGF.enterGameCommon(  )
+function FishGF.enterGameCommon( gameName )
     FishGI.isExitRoom = true
     FishGI.exitType = 1000
     FishGI.hallScene.net:dealloc()
+    local function updateLobbyData(appId, appKey, gameId)
+        APP_ID = appId
+        APP_KEY = appKey
+        GAME_ID = gameId
+        URLKEY = APP_ID .. APP_KEY .. APP_ID
+    end
+    local lobbyData = {
+        game_conf = "SmallGames."..gameName..".GameConf",
+        app_id = APP_ID,
+        app_key = APP_KEY,
+        game_id = GAME_ID,
+        channel_id = CHANNEL_ID,
+        system_status = FishGI.SYSTEM_STATE,
+        wechat_appid = FishGI.WebUserData:GetWXShareAppId(),
+        callbackUpdateLobbyData = updateLobbyData,
+        server_config = FishGI.serverConfig,
+        login_type = FishGI.loginScene.net.loginType,
+        guest_name = FishGI.loginScene.net.strLoginUserName,
+        user_name = FishGI.loginScene.net.userName,
+        user_pass = FishGI.loginScene.net.password,
+        thirdlogin_info = FishGI.loginScene.net.thirdLoginInfo,
+    }
+    return lobbyData
 end
 
 function FishGF.enterGameGtsp(  )
-    FishGF.enterGameCommon()
-    require("games.gtsp.ConstantDef")("games.gtsp", "games/gtsp", "Buyu", "gtsp")
+    local lobbyData = FishGF.enterGameCommon("gtsp")
+    require("games.gtsp.ConstantDef")("games.gtsp", "games/gtsp", "Buyu", "gtsp", lobbyData)
 end
 
 --龟兔赛跑 gtsp
@@ -1448,7 +1471,7 @@ function FishGF.checkUpdate(shortName)
     local info = require("VersionConfig")[shortName]
     local versionPath = cc.FileUtils:getInstance():getWritablePath().."/"..info.FILE_NAME.."version.lua"
     local isExistWritePath = cc.FileUtils:getInstance():isFileExist(versionPath)
-	local isExistLocalPath = cc.FileUtils:getInstance():isFileExist(info.FILE_NAME.."version.lua");
+	local isExistLocalPath = cc.FileUtils:getInstance():isFileExist(info.FILE_NAME.."version.lua")
     local version = info.VER
     if (isExist or isExistLocalPath) then version = require(info.FILE_NAME.."version.lua") end
     local hotScene = require("Update/UpDateScene").create(info.APP_ID..info.APP_KEY..info.APP_ID, info.APP_ID, info.CHANNEL_ID, version)
