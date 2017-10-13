@@ -6,18 +6,17 @@
 
 USING_NS_CC;
 
-const int chainCount = 8;
-
 class SkillLockManager : public Node
 {
 public:
 	static SkillLockManager *getInstance();
 	bool init();
-	bool initLock();
-	bool initLockAct();
 	void playLockChangeAim();
+	void reset();
 
 	void setLockLayer(Layer* lockLayer) { mLockLayer = lockLayer; }
+
+	void setLuaNode(Node* bindNode, ValueMap data);
 
 	void upDataLockSprAct(float aimPosX, float aimPosY);
 	void setLockSpr(bool isShow);
@@ -42,6 +41,7 @@ private:
 	Sprite* mLockLoop;
 	Sprite* mLockArrow;
 	std::map<int, Sprite*> mChainMap;
+	std::map<int, Action*> mActMap;
 };
 
 #endif

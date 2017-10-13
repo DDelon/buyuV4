@@ -48,8 +48,7 @@ void Bullet::initEffect(int effectId)
 	{
 		Sprite *pTemp = Sprite::create("battle/effect/effect_bullet_superpos_01.png");
 		pTemp->setPosition(Vec2(_pSprite->getContentSize().width / 2, _pSprite->getContentSize().height / 2));
-		pTemp->setBlendFunc(BlendFunc::ADDITIVE);
-		_pSprite->addChild(pTemp);
+		_pSprite->addChild(pTemp, 100);
 	}
 }
 

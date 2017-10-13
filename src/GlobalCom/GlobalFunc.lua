@@ -191,7 +191,11 @@ end
 
 --通过索引得到中文
 function FishGF.getChByIndex(index)
-    return FishGI.GameConfig:getLanguageFromBin("language", index);
+    local result = FishGI.GameTableData:getLanguageTable(index)
+    if result == nil or result == "" then
+        result = FishGI.GameConfig:getLanguageFromBin("language", index);
+    end
+    return result
 end
 
 --通过id得到道具的中文单位
@@ -241,17 +245,31 @@ function FishGF.getHallPropAimByID(propId)
 end
 
 --显示系统消息提示框
-function FishGF.showMessageLayer(messageType,strMsg,callback,scene,strHook)
+function FishGF.showMessageLayer(messageType,strMsg,callback,scene,strHook,delayTime)
     local curScene = (scene == nil and cc.Director:getInstance():getRunningScene() or scene);
     if curScene == nil or type(curScene) == "number" then
         return
     end
-    local uiNoticeLayer = FishGI.CommonLayer:getComLayer("uiNoticeLayer")
-    if uiNoticeLayer ~= nil then
-        uiNoticeLayer:setData(messageType,strMsg,callback,strHook)
-        local isShow = uiNoticeLayer["isShow"]
-        if isShow == nil or isShow == false then
-            uiNoticeLayer:showLayer() 
+    if delayTime ~= nil then
+        local function show()
+            local uiNoticeLayer = FishGI.CommonLayer:getComLayer("uiNoticeLayer")
+            if uiNoticeLayer ~= nil then
+                uiNoticeLayer:setData(messageType,strMsg,callback,strHook)
+                local isShow = uiNoticeLayer["isShow"]
+                if isShow == nil or isShow == false then
+                    uiNoticeLayer:showLayer() 
+                end
+            end
+        end
+        curScene:runAction(cc.Sequence:create(cc.DelayTime:create(delayTime), cc.CallFunc:create(show)))
+    else
+        local uiNoticeLayer = FishGI.CommonLayer:getComLayer("uiNoticeLayer")
+        if uiNoticeLayer ~= nil then
+            uiNoticeLayer:setData(messageType,strMsg,callback,strHook)
+            local isShow = uiNoticeLayer["isShow"]
+            if isShow == nil or isShow == false then
+                uiNoticeLayer:showLayer() 
+            end
         end
     end
 end
@@ -320,7 +338,7 @@ function FishGF.showSystemTip(message,keyId,delaytime)
 end
 
 --等待框
-function FishGF.waitNetManager(isAdd,message,waitId)
+function FishGF.waitNetManager(isAdd,message,waitId,delaytime)
     if message == nil then
         message = FishGF.getChByIndex(800000178)
     end
@@ -334,7 +352,7 @@ function FishGF.waitNetManager(isAdd,message,waitId)
     else
         FishGF.delSwallowLayer(waitId)
     end
-    FishGF.updataSwallowLayer(swallowLayer)
+    FishGF.updataSwallowLayer(swallowLayer,delaytime)
 end
 
 --创建等待框
@@ -345,12 +363,20 @@ function FishGF.getSwallowLayer()
     local swallowLayer = cc.Director:getInstance():getRunningScene():getChildByName("swallowLayer_list")
     if swallowLayer == nil then
         local size = cc.Director:getInstance():getWinSize();
-        swallowLayer = ccui.Button:create("common/layerbg/com_pic_graybg.png");
-        swallowLayer:setScale9Enabled(true);
+        swallowLayer = cc.Layer:create();
         swallowLayer:setContentSize(size);
         swallowLayer:setName("swallowLayer_list")
-        swallowLayer:setPosition(cc.p(size.width/2, size.height/2));
         cc.Director:getInstance():getRunningScene():addChild(swallowLayer, 2001, FishCD.TAG.WAIT_NET_CALLBACK);
+        swallowLayer:setVisible(false)
+
+        local grayBg = ccui.ImageView:create()
+        grayBg:ignoreContentAdaptWithSize(false)
+        grayBg:loadTexture("common/layerbg/com_pic_graybg.png",0)
+        grayBg:setScale9Enabled(true)
+        grayBg:setContentSize(size);
+        grayBg:setLayoutComponentEnabled(true)
+        swallowLayer:addChild(grayBg)
+        grayBg:setPosition(cc.p(size.width/2,size.height/2))
 
         local rotateSpr = cc.Sprite:create("common/com_pic_loading_circle.png")
         swallowLayer:addChild(rotateSpr)
@@ -362,6 +388,21 @@ function FishGF.getSwallowLayer()
         swallowLayer:addChild(textLab)
         textLab:setName("textLab")
         textLab:setPosition(cc.p(size.width/2,size.height/2- rotateSpr:getContentSize().height*2/3))
+
+        local function onTouchBegan(touch, event)
+            if swallowLayer.isDelayShow== nil or swallowLayer.isDelayShow then
+                return true;
+            end
+            return false;
+        end        
+
+        local listener = cc.EventListenerTouchOneByOne:create()
+        listener:setSwallowTouches(true)
+        listener:registerScriptHandler(onTouchBegan, cc.Handler.EVENT_TOUCH_BEGAN)
+
+        local eventDispatcher = swallowLayer:getEventDispatcher()
+        eventDispatcher:addEventListenerWithSceneGraphPriority(listener, swallowLayer) 
+
     end
     return swallowLayer
 end
@@ -466,28 +507,41 @@ function FishGF.waitOverTime()
         swallowLayer:setVisible(false)
         FishGF.clearSwallowLayer()
         FishGF.createCloseSocketNotice(FishGF.getChByIndex(800000036)..".","waitOverTime")
-        FishGF.print("-----------------waitOverTime--------------waitId="..waitId)
+        print("-----------------waitOverTime--------------waitId="..waitId)
     else
         swallowLayer:stopActionByTag(FishCD.OVER_TIME_ACT_TAG)
         --没等待超时
-        FishGF.print("------------超时处理---------")
+        print("------------超时处理---------")
     end
 end
 
 --更新等待框界面
-function FishGF.updataSwallowLayer(swallowLayer)
+function FishGF.updataSwallowLayer(swallowLayer,delayTime)
     swallowLayer:stopActionByTag(FishCD.OVER_TIME_ACT_TAG)
     local IdCount,noIdCount = FishGF.getWaitListSize()
     if IdCount > 0 or noIdCount > 0 then
-        swallowLayer:setVisible(true)
         local function overTimeFunc()
             FishGF.waitOverTime()
         end
+        if delayTime == nil then
+            delayTime = 0.5
+        elseif delayTime == 0 then
+            swallowLayer:stopActionByTag(FishCD.OVER_TIME_ACT_TAG + 1)
+            swallowLayer.isDelayShow = false
+        end
+        if not swallowLayer.isDelayShow then
+            swallowLayer.isDelayShow = true
+            local delayShowAct = cc.Sequence:create(cc.DelayTime:create(delayTime),cc.Show:create());
+            delayShowAct:setTag(FishCD.OVER_TIME_ACT_TAG + 1);
+            swallowLayer:runAction(delayShowAct);
+        end
         local delayTimeAct = cc.Sequence:create(cc.DelayTime:create(FishCD.OVER_TIME), cc.CallFunc:create(overTimeFunc));
         delayTimeAct:setTag(FishCD.OVER_TIME_ACT_TAG);
-        swallowLayer:runAction(delayTimeAct);     
+        swallowLayer:runAction(delayTimeAct);
     else
         swallowLayer:setVisible(false)
+        swallowLayer.isDelayShow = false
+        swallowLayer:stopActionByTag(FishCD.OVER_TIME_ACT_TAG + 1)
     end
 
 end
@@ -566,8 +620,8 @@ end
 --排序 type:0 >从大到小, 1 <从小到大, 2 >=, 3 <=
 function FishGF.sortByKey(valTable,key,type)
     local function comps(a,b)
-        local ida = tonumber(a[key])
-        local idb = tonumber(b[key])
+        local ida = (a[key])
+        local idb = (b[key])
         if type == 0 and ida > idb then
             return true
         elseif type == 1 and ida < idb then
@@ -991,6 +1045,8 @@ function FishGF.isRechargeSucceed(newData)
     local fishIcon = newData.fishIcon
     local crystal = newData.crystal
     local leftMonthCardDay = newData.leftMonthCardDay
+    local val = 0;
+    local unitStr = "";
 
 
     local myFishIcon = FishGMF.getPlayerPropData(newData.playerId,FishCD.PROP_TAG_01).realCount
@@ -999,22 +1055,34 @@ function FishGF.isRechargeSucceed(newData)
         return true
     end
     local myLeftMonthCardDay = FishGI.myData.leftMonthCardDay
+    print("isRechargeSucceed GlobalFunc 1008")
 
     if myFishIcon ~= fishIcon or myCrystal ~= crystal or myLeftMonthCardDay ~= leftMonthCardDay then
+        if myFishIcon ~= fishIcon then
+            val = fishIcon-myFishIcon
+            unitStr = "鱼币！\n"..FishGF.getChByIndex(800000353)
+        elseif myCrystal ~= crystal then
+            val = crystal-myCrystal
+            unitStr = "水晶！\n"..FishGF.getChByIndex(800000352)
+        end
+
         isSuccess = true
     end
     print("--------isRechargeSucceed------1111---------")
 
+	
     --结果处理
     if isSuccess then
         FishGF.waitNetManager(false,nil,"doPaySDK")
         FishGI.IS_RECHARGE = 0
         FishGI.eventDispatcher:dispatch("BuySuccessCall", resultInfo)
         FishGI.WebUserData:initWithUserId(FishGI.WebUserData:GetUserId())
-        if FishGI.PLAYER_STATE == 0 then    --"游客"
+        if not FishGI.WebUserData:isActivited() then    --"游客"
             FishGF.showMessageLayer(FishCD.MODE_MIDDLE_OK_ONLY,FishGF.getChByIndex(800000175),nil) 
         else
-            FishGF.showSystemTip(nil,800000157,1);
+            if not (val == 0 and unitStr == "") then
+                FishGF.showMessageLayer(FishCD.MODE_MIDDLE_OK_ONLY,FishGF.getChByIndex(800000351)..val..unitStr,nil, nil, nil, 0.5)
+            end
         end
     else
         FishGI.IS_RECHARGE = FishGI.IS_RECHARGE - 1
@@ -1029,7 +1097,7 @@ function FishGF.isRechargeSucceed(newData)
              print("--------isRechargeSucceed------333---------")
             if FishGI.GAME_STATE == 2 then
                 FishGF.waitNetManager(false,nil,"doPaySDK")
-                FishGF.waitNetManager(true,nil,"doPaySDK")
+                FishGF.waitNetManager(true,nil,"doPaySDK",0)
                 FishGI.hallScene.net.roommanager:sendDataGetInfo();
             elseif FishGI.GAME_STATE == 3 then
                 FishGI.gameScene.net:sendBackFromCharge()
@@ -1476,4 +1544,68 @@ function FishGF.checkUpdate(shortName)
     if (isExist or isExistLocalPath) then version = require(info.FILE_NAME.."version.lua") end
     local hotScene = require("Update/UpDateScene").create(info.APP_ID..info.APP_KEY..info.APP_ID, info.APP_ID, info.CHANNEL_ID, version)
     cc.Director:getInstance():pushScene(hotScene)
+end
+
+--朋友场数据转换  道具类型,0:不带怼人道具，1:带怼人道具   人数类型，0:2人，1:3人，2:4人   时长类型,0:8分钟，1,24分钟
+function FishGF.changeRoomData(key,val)
+    local result = {}
+    if key == "roomDurationType" then
+        if val == 0 then
+            result.cardCount = 1
+            result.str = FishGF.getChByIndex(800000327)
+        elseif val == 1 then
+            result.cardCount = 3
+            result.str = FishGF.getChByIndex(800000328)
+        end
+        result.time = 8*60*result.cardCount
+    elseif key == "roomPeopleCountType" then
+        if val == 0 then
+            result.count = 2
+            result.str = FishGF.getChByIndex(800000324)
+        elseif val == 1 then
+            result.count = 3
+            result.str = FishGF.getChByIndex(800000325)
+        elseif val == 2 then
+            result.count = 4
+            result.str = FishGF.getChByIndex(800000326)
+        end
+    elseif key == "roomPropType" then
+        if val == 0 then
+            result.str = FishGF.getChByIndex(800000323)
+        elseif val == 1 then
+            result.str = FishGF.getChByIndex(800000322)
+        end
+    end
+
+    return result
+end
+
+function FishGF.dgtSDKAct(content)
+    if device.platform == "android" then
+        print("gdt data"..content)
+        local luaBridge = require("cocos.cocos2d.luaj");
+        local javaClassName = "com.tencent.tmgp.weile.buyu.GDTHelper";
+        local javaMethodName = "activeDevice";
+        local javaParams = {
+            content
+        }
+        local javaMethodSig = "(Ljava/lang/String;)V";
+        local ok,ret = luaBridge.callStaticMethod(javaClassName, javaMethodName, javaParams, javaMethodSig);
+        
+    end
+end
+
+function FishGF.dgtSDKReg(content)
+    if device.platform == "android" then
+        print("gdt data"..content)
+        local luaBridge = require("cocos.cocos2d.luaj");
+        local javaClassName = "com.tencent.tmgp.weile.buyu.GDTHelper";
+        local javaMethodName = "registerAccount";
+        local javaParams = {
+            content
+        }
+        local javaMethodSig = "(Ljava/lang/String;)V";
+        local ok,ret = luaBridge.callStaticMethod(javaClassName, javaMethodName, javaParams, javaMethodSig);
+        
+    end
 end

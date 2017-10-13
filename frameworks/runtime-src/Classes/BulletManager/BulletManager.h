@@ -32,13 +32,11 @@ public:
 	//获得特殊子弹
 	ValueMap getLockBullet(int playerId);
 
-	//设置目标鱼
-	void setPlayerAimFish(int playerId, Fish* fish);
-	//得到目标鱼
-	Fish* getPlayerAimFish(int playerId);
-
 	//改变子弹目标
 	void changeBulletAim(int playerId, int timelineId, int fishArrayId);
+	//改变子弹目标
+	void changeBulletAim(int playerId, Fish*aimFish);
+
 
 	ValueVector * getCollisionFishes(string bulletId);
 

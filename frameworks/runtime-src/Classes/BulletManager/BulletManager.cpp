@@ -304,7 +304,7 @@ void BulletManager::changeBulletAim(int playerId, int timelineId, int fishArrayI
 	{
 		return;
 	}
-	this->setPlayerAimFish(playerId,mAimFish);
+
 	for (int i = 0; i < _bulletVec.size(); ++i)
 	{
 		if (_bulletVec[i]->isVisible()&& !_bulletVec[i]->isRemoved() &&_bulletVec[i]->getPlayerId() == playerId)
@@ -312,6 +312,25 @@ void BulletManager::changeBulletAim(int playerId, int timelineId, int fishArrayI
 			if (_bulletVec[i]->getTimelineId() > 0)
 			{
 				_bulletVec[i]->setAimFish(mAimFish);
+			}
+		}
+	}
+}
+
+void BulletManager::changeBulletAim(int playerId, Fish*aimFish)
+{
+	if (aimFish == nullptr)
+	{
+		return;
+	}
+
+	for (int i = 0; i < _bulletVec.size(); ++i)
+	{
+		if (_bulletVec[i]->isVisible() && !_bulletVec[i]->isRemoved() && _bulletVec[i]->getPlayerId() == playerId)
+		{
+			if (_bulletVec[i]->getTimelineId() > 0)
+			{
+				_bulletVec[i]->setAimFish(aimFish);
 			}
 		}
 	}
@@ -377,12 +396,3 @@ Node* BulletManager::getCannon(int playerId)
 	return NULL;
 }
 
-void BulletManager::setPlayerAimFish(int playerId,Fish* fish)
-{
-	_AimFishMap[playerId] = fish;
-}
-
-Fish* BulletManager::getPlayerAimFish(int playerId)
-{
-	return _AimFishMap[playerId];
-}

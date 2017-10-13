@@ -16,6 +16,8 @@ public:
 
 	Size getNetSize();
 
+	void reset();
+
 private:
 
 	void initNetsPool();

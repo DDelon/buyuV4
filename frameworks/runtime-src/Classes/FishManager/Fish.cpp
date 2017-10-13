@@ -639,11 +639,19 @@ std::vector<Vec2> Fish::getCollisionVecByStr(std::string str)
 }
 Vec2 Fish::getLockPosition()
 {
+	if (this == nullptr)
+	{
+		return Vec2(0, 0);
+	}
 	return this->convertToWorldSpace(mLockOffset);
 }
 
 Vec2 Fish::getOtherLockPosition()
 {
+	if (this == nullptr)
+	{
+		return Vec2(0, 0);
+	}
 	return this->convertToWorldSpace(mOtherLockOffset);
 }
 

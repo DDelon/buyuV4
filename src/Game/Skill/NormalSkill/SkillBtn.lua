@@ -13,15 +13,15 @@ SkillBtn.RESOURCE_BINDING  = {
     ["fnt_count"]    = { ["varname"] = "fnt_count" },   
     ["fnt_price"]    = { ["varname"] = "fnt_price" },   
     ["spr_price"]    = { ["varname"] = "spr_price" },
+    ["node_light_3"]    = { ["varname"] = "node_light_3" },
 }
 
 function SkillBtn:onCreate( ... )
-    self:runAction(self.resourceNode_["animation"])
-    self.animation = self.resourceNode_["animation"]
 
 end
 
 function SkillBtn:initBtn( propId ,index,allCount)
+    self.propId = propId
     self:initBtnState(propId)
     self.btn_skill:setTag(propId)
 
@@ -30,14 +30,27 @@ function SkillBtn:initBtn( propId ,index,allCount)
         print("----initWithFile is faile------")
     end    
 
-    self:initLight(propId,index,allCount)
+    self:initLight(index,allCount)
 
     self:initProgressTimer()
+    self:setBtnIfCanUsed(0)
+end
 
+--初始化为按键，不是道具
+function SkillBtn:initNormalBtn(btnPic,btnCallBck )
+    self.spr_lock:initWithFile(btnPic)
+    self:initLight(1,1)
+    self:setState(1)
+
+    self.num_bg:setVisible(false)
+    self.fnt_price:setVisible(false)
+    self.fnt_count:setVisible(false)
+    self.spr_gray:setVisible(false)
+    self.spr_price:setVisible(false)
 end
 
 --初始化光圈
-function SkillBtn:initLight(propId,index,allCount )
+function SkillBtn:initLight(index,allCount )
     self.node_light_1:stopAllActions()
     self.node_light_1:runAction(self.node_light_1.animation)
     local disTime = 55/60
@@ -66,6 +79,11 @@ function SkillBtn:initLight(propId,index,allCount )
     self.node_light_2:stopAllActions()
     self.node_light_2:runAction(self.node_light_2.animation)
     self.node_light_2.animation:play("doplay", true);
+
+    self.node_light_3:stopAllActions()
+    self.node_light_3:runAction(self.node_light_3.animation)
+    self.node_light_3.animation:play("use", false);
+
 end
 
 --阴影进度条
@@ -94,11 +112,6 @@ end
 
 function SkillBtn:initBtnState( propId )
     self:setState(1)
-    -- if propId == 3 or propId == 4 or propId == 5 or propId == 17 then
-    --     self:setState(1)
-    -- elseif propId == 14 or propId == 6 or propId == 15 or propId == 16 then
-    --     self:setState(0)
-    -- end
 end
 
 function SkillBtn:getBtn(  )
@@ -212,5 +225,49 @@ function SkillBtn:stopTimer()
     Timer:setPercentage(0) 
     self.btn_skill:setTouchEnabled(true)
 end
+
+--设置按键是否可用
+function SkillBtn:playBtnUpAct(index)
+    print("------------setBtnIfCanUsed----------index="..index.."--self.propId="..self.propId)
+    if index == 0 then      --正常
+        self.node_light_3.animation:play("use", false);
+    elseif index == 1 then      --禁用
+        self.node_light_3.animation:play("nouse", false);
+    elseif index == 2 then      --解锁动作1
+        self.node_light_3.animation:play("activation1", false);
+    elseif index == 3 then      --解锁动作2
+        self.node_light_3.animation:play("activation2", false);
+        self:palyReleaseViolnet()
+    end
+
+end
+
+--狂暴解锁图片
+function SkillBtn:palyReleaseViolnet()
+    local spr = cc.Sprite:create("battle/skill/bl_pic_kb_yjjs.png")
+    local playerSelf =  FishGI.gameScene.playerManager:getMyData()
+    local chairId = playerSelf.playerInfo.chairId
+    local cannon = playerSelf.cannon
+    cannon:addChild(spr)
+    spr:setPosition(cc.p(0,170))
+    if chairId > 2 then
+        spr:setRotation(180)
+    end
+    local act = cc.Sequence:create(cc.DelayTime:create(3),cc.RemoveSelf:create())
+    spr:runAction(act)
+
+end
+
+--设置按键是否可用
+function SkillBtn:setBtnIfCanUsed(ifCan)
+    if ifCan then
+        FishGF.grayToNormal(self.spr_lock)
+        --self.spr_lock:setColor(cc.c3b(255, 255,255))
+    else
+        FishGF.spriteToGray(self.spr_lock)
+        --self.spr_lock:setColor(cc.c3b(100, 100, 100))
+    end
+end
+
 
 return SkillBtn;

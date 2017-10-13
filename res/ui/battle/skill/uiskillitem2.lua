@@ -315,6 +315,29 @@ innerProject.animation:setTimeSpeed(1.0000)
 node_light_1:runAction(innerProject.animation)
 btn_skill:addChild(node_light_1)
 
+--Create node_light_3
+innerCSD = require("ui.battle.skill.uiskilllight3")
+innerProject = innerCSD.create(callBackProvider)
+local node_light_3 = innerProject.root
+node_light_3.animation = innerProject.animation
+node_light_3:setName("node_light_3")
+node_light_3:setTag(95)
+node_light_3:setCascadeColorEnabled(true)
+node_light_3:setCascadeOpacityEnabled(true)
+node_light_3:setPosition(49.0000, 49.0000)
+layout = ccui.LayoutComponent:bindLayoutComponent(node_light_3)
+layout:setPositionPercentXEnabled(true)
+layout:setPositionPercentYEnabled(true)
+layout:setPositionPercentX(0.5000)
+layout:setPositionPercentY(0.5000)
+layout:setLeftMargin(49.0000)
+layout:setRightMargin(49.0000)
+layout:setTopMargin(49.0000)
+layout:setBottomMargin(49.0000)
+innerProject.animation:setTimeSpeed(1.0000)
+node_light_3:runAction(innerProject.animation)
+btn_skill:addChild(node_light_3)
+
 --Create Animation
 result['animation'] = ccs.ActionTimeline:create()
   

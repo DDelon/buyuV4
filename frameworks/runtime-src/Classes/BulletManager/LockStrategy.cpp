@@ -31,7 +31,8 @@ void LockStrategy::initStrategyData(Bullet *pThis, BulletInfo info)
 
 	//锁定子弹 通过playerid获取该玩家目前锁定的鱼保存下来
 	
-	Fish *lockTargetFish = BulletManager::getInstance()->getPlayerAimFish(info.playerId);
+	Fish *lockTargetFish = SkillLockManager::getInstance()->getAimFish(info.playerId);
+	//Fish *lockTargetFish = FishFrameManager::getInstance()->getFishByID(info.timelineId, info.fishArrayId);
  	if (lockTargetFish == nullptr)
 	{
 		//通过timelineid和fisharrayid去找鱼

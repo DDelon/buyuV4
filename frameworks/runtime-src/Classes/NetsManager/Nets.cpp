@@ -50,24 +50,14 @@ void Nets::initEffect(int effectId)
 	if (effectId == 0)
 		return;
 	bool sign = false;
-	Sprite *pEffect = Sprite::create("battle/effect/01.png");
-	pEffect->runAction(RepeatForever::create(Sequence::create(DelayTime::create(0.1f), CallFuncN::create([&](Ref *pSender){
-		if (sign)
-		{
-			static_cast<Sprite *>(pSender)->setTexture("battle/effect/01.png");
-			sign = false;
-		}
-		else
-		{
-			static_cast<Sprite *>(pSender)->setTexture("battle/effect/02.png");
-			sign = true;
-		}
-	}), NULL)));
+	Sprite *pEffect = Sprite::create("battle/effect/effect_skll_02.png");
+	pEffect->setScale(0.8);
+	pEffect->runAction(Sequence::create(ScaleTo::create(0, 0.8, 0.8), ScaleTo::create(0.08, 1.3, 1.3), FadeTo::create(0.17, 1.5), RemoveSelf::create(), NULL));
 	pEffect->setPosition(Vec2(_pNetSprite->getContentSize().width/2, _pNetSprite->getContentSize().height/2));
 	//
-	pEffect->setVisible(false);
+	//pEffect->setVisible(false);
 	pEffect->setTag(8888);
-	_pNetSprite->addChild(pEffect);
+	_pNetSprite->addChild(pEffect, 111);
 }
 
 Action* Nets::initAnimation(std::string fileName, float delay)

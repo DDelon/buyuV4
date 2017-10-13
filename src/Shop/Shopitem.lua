@@ -122,9 +122,10 @@ function Shopitem:onClickBuy( sender )
     data["body"] = self.unit.." "..self.id.." x1";
     data["money"] = self.recharge;
     data["price"] = self.recharge/100;
-    data["type"] = self.recharge_type;
+    data["rechargeType"] = tonumber(self.recharge_type);
     data["autobuy"] = 1;
     data["subject"] = self.unit;
+    data["num"] = self.recharge_num;
     data["ingame"] = 1;
     data["roomid"] = 0;
     data["count"] = 1;

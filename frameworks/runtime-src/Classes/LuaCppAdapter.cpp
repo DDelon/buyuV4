@@ -182,6 +182,8 @@ void LuaCppAdapter::exitGame()
 	PlayerManager::getInstance()->reset();
 	PlayerManager::getInstance()->removeFromParent();
 	BulletManager::getInstance()->reset();
+	SkillLockManager::getInstance()->reset();
+	NetsManager::getInstance()->reset();
 	_gameType = 0;
 }
 
@@ -231,14 +233,13 @@ void LuaCppAdapter::fishGroupCome(ValueMap data)
 
 void LuaCppAdapter::fishTimeLineCome(ValueMap data)
 {
+	//bool isContinue = data["isContinue"].asBool();
 	int index = data["index"].asInt();
 	FishFrameManager::getInstance()->runAction(Sequence::create(DelayTime::create(1.0f), CallFuncN::create([=](Ref *pSender){
-		
-		
+		FishFrameManager::getInstance()->reset();
 		FishFrameManager::getInstance()->addFishTimeline(index, 20);
 		FishFrameManager::getInstance()->start();
 	}), NULL));
-
 	FishFrameManager::getInstance()->moveToOut();
 
 }
@@ -405,6 +406,34 @@ void LuaCppAdapter::playerFire(ValueMap data)
 		//已用的子弹更新
 		int newUsedBullet = player->getRoleData()->getPropData(USED_BULLET).realCount + propCount;
 		player->getRoleData()->setPropRealData(USED_BULLET, newUsedBullet);
+
+// 		if (timelineId != 0)
+// 		{
+// 			bool isChangeAimFish = false;
+// 			Fish* aimFish = SkillLockManager::getInstance()->getAimFish(playerId);
+// 			if (aimFish != nullptr)
+// 			{
+// 				int aimTimelineId = aimFish->getTimelineId();
+// 				if (aimTimelineId != timelineId)
+// 				{
+// 					isChangeAimFish = true;
+// 				}
+// 			}
+// 			else
+// 			{
+// 				isChangeAimFish = true;
+// 			}
+// 			if (isChangeAimFish)
+// 			{
+// 				printf("--------isChangeAimFish == true------------------");
+// 				ValueMap lockFishData;
+// 				lockFishData["setType"] = 3;
+// 				lockFishData["playerId"] = playerId;
+// 				lockFishData["timelineId"] = timelineId;
+// 				lockFishData["fishArrayId"] = fishArrayId;
+// 				SkillLockManager::getInstance()->setLockData(lockFishData);
+// 			}
+// 		}
 	}
 	else if (fireType == 1)	//自己提前发射子弹，假扣钱
 	{
@@ -1128,6 +1157,13 @@ cocos2d::ValueMap LuaCppAdapter::myCreateBullet(ValueMap data)
 	}
 
 	//低于房间最低炮倍，判断是否需要切换
+	int effectId = bulletData["effectId"].asInt();
+	float multiple = 1;
+	if (effectId == 17)
+	{
+		multiple = 0.5;
+	}
+	showGold = showGold*multiple;
 	int mCurRoomMinRate = PlayerManager::getInstance()->getCurRoomMinRate();
 	if (showGold < mCurRoomMinRate)
 	{
@@ -1219,6 +1255,26 @@ cocos2d::ValueMap LuaCppAdapter::myCreateFriendBullet(ValueMap data)
 		map["isSucceed"] = 2;
 		return map;
 	}
+
+	int timelineId = 0;
+	int fishArrayId = 0;
+	if (SkillLockManager::getInstance()->getIsLock())
+	{
+		Fish* aimFish = SkillLockManager::getInstance()->getAimFish(playerId);
+		if (aimFish == nullptr)
+		{
+			map["isSucceed"] = 7;
+			return map;
+		}
+		timelineId = aimFish->getTimelineId();
+		fishArrayId = aimFish->getFishArrayId();
+		Node* cannon = BulletManager::getInstance()->getCannon(playerId);
+		map["lockDegree"] = cannon->getRotation() + 90;
+	}
+	map["timelineId"] = timelineId;
+	map["fishArrayId"] = fishArrayId;
+	bulletData["timelineId"] = timelineId;
+	bulletData["fishArrayId"] = fishArrayId;
 
 	map["isSucceed"] = 0;
 	map["bulletRate"] = roleData->currentGunRate;
@@ -1487,19 +1543,10 @@ ValueMap LuaCppAdapter::luaUseCppFun(ValueMap data)
 
 		return map;
 	}
-	else if (funName == "setAimFish")
-	{
-		int playerId = data["playerId"].asInt();
-		int timelineId = data["timelineId"].asInt();
-		int fishArrayId = data["fishArrayId"].asInt();
-		//int isSelf = data["isSelf"].asInt();
-		BulletManager::getInstance()->changeBulletAim(playerId, timelineId, fishArrayId);
-
-	}
 	else if (funName == "getAimFishPos")
 	{
 		int playerId = data["playerId"].asInt();
-		Fish* aimFish = BulletManager::getInstance()->getPlayerAimFish(playerId);
+		Fish* aimFish = SkillLockManager::getInstance()->getAimFish(playerId);
 		if (aimFish != nullptr)
 		{
 			Vec2 lockPos = aimFish->getLockPosition();
@@ -1861,8 +1908,15 @@ void LuaCppAdapter::setLuaNode(int type, Node *pManagerLayer, ValueMap data)
 {
 	if (type == 1)
 	{
+		printf("------------init lock layer------------\n");
+		SkillLockManager::getInstance()->reset();
 		SkillLockManager::getInstance()->setLockLayer((Layer*)pManagerLayer);
-		SkillLockManager::getInstance()->initLock();
+		
+	}
+	else if (type == 2)
+	{
+		SkillLockManager::getInstance()->setLuaNode(pManagerLayer, data);
+
 	}
 }
 

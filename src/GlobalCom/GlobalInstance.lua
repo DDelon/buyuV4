@@ -109,6 +109,7 @@ FishGI.deskId = 0;
 
 FishGI.isAutoFire = false	--是否自动开炮
 FishGI.isLock = false	--是否锁定中
+FishGI.lockCount = 0    --锁定计数
 
 FishGI.gameClientIsNil = false;	
 

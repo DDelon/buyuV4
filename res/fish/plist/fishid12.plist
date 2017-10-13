@@ -9,13 +9,13 @@
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
-                <string>{-1,-18}</string>
+                <string>{-1,-23}</string>
                 <key>spriteSize</key>
-                <string>{102,124}</string>
+                <string>{102,114}</string>
                 <key>spriteSourceSize</key>
                 <string>{120,160}</string>
                 <key>textureRect</key>
-                <string>{{1,199},{102,124}}</string>
+                <string>{{129,95},{102,114}}</string>
                 <key>textureRotated</key>
                 <true/>
             </dict>
@@ -30,7 +30,7 @@
                 <key>spriteSourceSize</key>
                 <string>{120,160}</string>
                 <key>textureRect</key>
-                <string>{{109,325},{86,124}}</string>
+                <string>{{1,1},{86,124}}</string>
                 <key>textureRotated</key>
                 <true/>
             </dict>
@@ -45,7 +45,7 @@
                 <key>spriteSourceSize</key>
                 <string>{120,160}</string>
                 <key>textureRect</key>
-                <string>{{1,105},{92,126}}</string>
+                <string>{{1,95},{92,126}}</string>
                 <key>textureRotated</key>
                 <true/>
             </dict>
@@ -60,7 +60,7 @@
                 <key>spriteSourceSize</key>
                 <string>{120,160}</string>
                 <key>textureRect</key>
-                <string>{{127,231},{92,120}}</string>
+                <string>{{127,1},{92,120}}</string>
                 <key>textureRotated</key>
                 <true/>
             </dict>
@@ -75,9 +75,9 @@
                 <key>spriteSourceSize</key>
                 <string>{120,160}</string>
                 <key>textureRect</key>
-                <string>{{133,1},{108,120}}</string>
+                <string>{{117,303},{108,120}}</string>
                 <key>textureRotated</key>
-                <false/>
+                <true/>
             </dict>
             <key>fishid12_05.png</key>
             <dict>
@@ -90,22 +90,22 @@
                 <key>spriteSourceSize</key>
                 <string>{120,160}</string>
                 <key>textureRect</key>
-                <string>{{1,303},{106,108}}</string>
+                <string>{{1,189},{106,108}}</string>
                 <key>textureRotated</key>
-                <false/>
+                <true/>
             </dict>
             <key>fishid12_06.png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
-                <string>{0,13}</string>
+                <string>{0,12}</string>
                 <key>spriteSize</key>
-                <string>{106,116}</string>
+                <string>{106,114}</string>
                 <key>spriteSourceSize</key>
                 <string>{120,160}</string>
                 <key>textureRect</key>
-                <string>{{129,123},{106,116}}</string>
+                <string>{{1,303},{106,114}}</string>
                 <key>textureRotated</key>
                 <true/>
             </dict>
@@ -120,7 +120,7 @@
                 <key>spriteSourceSize</key>
                 <string>{120,160}</string>
                 <key>textureRect</key>
-                <string>{{1,1},{102,130}}</string>
+                <string>{{111,199},{102,130}}</string>
                 <key>textureRotated</key>
                 <true/>
             </dict>
@@ -130,7 +130,7 @@
             <key>format</key>
             <integer>3</integer>
             <key>pixelFormat</key>
-            <string>RGBA4444</string>
+            <string>RGBA8888</string>
             <key>premultiplyAlpha</key>
             <false/>
             <key>realTextureFileName</key>
@@ -138,7 +138,7 @@
             <key>size</key>
             <string>{248,412}</string>
             <key>smartupdate</key>
-            <string>$TexturePacker:SmartUpdate:da3716e434678b73374b9cb137b6947d:1e4236c79d8a1142e73a815494cfb4d7:5474c457af8bdd2eaf9295d9cf52b594$</string>
+            <string>$TexturePacker:SmartUpdate:fe077988b3d06be297ddcb0509cf922b:758e28be9baa8367967e0f61ba1e80d2:5474c457af8bdd2eaf9295d9cf52b594$</string>
             <key>textureFileName</key>
             <string>fishid12.pvr.ccz</string>
         </dict>

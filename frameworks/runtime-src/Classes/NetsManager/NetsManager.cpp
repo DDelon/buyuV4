@@ -38,21 +38,6 @@ void NetsManager::start(Layer *pNetsLayer)
 
 void NetsManager::initNetsPool()
 {
-// 	for (int i = 930000001; i < 930000010; i++)
-// 	{
-// 		_netsPool[Value(i).asString()] = Array::create();
-// 		_netsPool[Value(i).asString()]->retain();
-// 		for (int j = 0; j < 5; ++j)
-// 		{
-// 			
-// 			Nets* nets = Nets::create();
-// 			nets->initSprite(Value(i).asString());
-// 			nets->retain();
-// 			_netsPool[Value(i).asString()]->addObject(nets);
-// 			_pNetsLayer->addChild(nets);
-// 		}
-// 		
-// 	}
 
 	TableMap& tm = ParseGameData::getInstance()->getTabMap("cannonoutlook");
 	TableMap::iterator it = tm.begin();
@@ -93,6 +78,10 @@ void NetsManager::createNets(std::string resId, Vec2 pos, int effectId)
 	}
 
 	Director::getInstance()->getScheduler()->performFunctionInCocosThread([=](){
+		if (_pNetsLayer == nullptr)
+		{
+			return;
+		}
 		Nets *nets = Nets::create();
 		nets->initSprite(resId);
 		nets->retain();
@@ -107,4 +96,9 @@ Size NetsManager::getNetSize()
 	SpriteFrame *pNetFrame = SpriteFrameCache::getInstance()->getSpriteFrameByName("net_1_00.png");
 	Size size = pNetFrame->getOriginalSize();
 	return size;
+}
+
+void NetsManager::reset()
+{
+	_pNetsLayer = nullptr;
 }

@@ -75,9 +75,11 @@ function SkillBase:judgeUseType()
         useType = 0
     else
         --判断VIP多少购买
-        local requireVip = tonumber(FishGI.GameTableData:getItemTable(self.propId).require_vip)
+        local itemData = FishGI.GameTableData:getItemTable(self.propId)
+        local requireVip = tonumber(itemData.require_vip)
         self.playerSelf = FishGI.gameScene.playerManager:getMyData()
         local playerInfo = self.playerSelf.playerInfo;
+        local propDes = "$".."("..FishGF.getChByIndex(800000337)..FishGF.getChByIndex(800000218)..itemData.pack_text..")"
 
         local curVip = playerInfo.vip_level;
         FishGF.print("curVip:"..curVip.." requireVip:"..requireVip);
@@ -89,7 +91,8 @@ function SkillBase:judgeUseType()
                     FishGI.gameScene.uiShopLayer:setShopType(1)
                 end
             end
-            local str = FishGF.getChByIndex(800000111)..requireVip..FishGF.getChByIndex(800000112);
+            local str = "\n"..FishGF.getChByIndex(800000111)..requireVip..FishGF.getChByIndex(800000112)..propDes
+            --local des = itemData.pack_text
             FishGF.showMessageLayer(FishCD.MODE_MIDDLE_OK_CLOSE,str,callback);
             return
         end
@@ -105,9 +108,27 @@ function SkillBase:judgeUseType()
                     FishGI.gameScene.uiShopLayer:setShopType(2)
                 end
             end
-            FishGF.showMessageLayer(FishCD.MODE_MIDDLE_OK_CLOSE,FishGF.getChByIndex(800000093),callback)
+            FishGF.showMessageLayer(FishCD.MODE_MIDDLE_OK_CLOSE,"\n"..FishGF.getChByIndex(800000093).."\n"..propDes,callback)
             return
         end
+
+        --提示炮倍不足
+        local need_cannon = tonumber(itemData.need_cannon)
+        local maxGunRate = playerInfo.maxGunRate;
+        FishGF.print("maxGunRate:"..maxGunRate.." --need_cannon:"..need_cannon);
+        if maxGunRate < need_cannon then
+            local function callback(sender)
+                local tag = sender:getTag()
+                if tag == 2 then
+                    FishGI.gameScene.uiUnlockCannon:showLayer()
+                end
+            end
+            local str = FishGF.getChByIndex(800000345)..need_cannon..FishGF.getChByIndex(800000346)..propDes
+            FishGF.showMessageLayer(FishCD.MODE_MIDDLE_OK_CLOSE,str,callback);
+            return
+        end
+
+
         useType = 1
     end
     return useType

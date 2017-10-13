@@ -117,6 +117,8 @@ function GameFriendScene:initView()
     self:addChild(self.playerManager)
 
     self.playerManager:initPlayers(self.uiMainLayer)
+
+    
 end
 
 function GameFriendScene:onEnter()
@@ -140,6 +142,10 @@ function GameFriendScene:onEnter()
 
     self.net:sendClientGameLoadedMessage()
 
+    --初始化朋友场锁定ui
+    LuaCppAdapter:getInstance():setLuaNode(1,self.uiMainLayer,{});
+    self.lockUI = require("Game/Skill/NormalSkill/SkillUI/LockFriendUI").create(FishGI.gameScene.uiMainLayer);
+
 end
 
 function GameFriendScene:exitGame()
@@ -156,7 +162,6 @@ function GameFriendScene:exitGame()
     end
     
     FishGI.isPlayerFlip = false;
-    FishGI.isLogin = true
 
     FishGI.isExitRoom = true
     FishGI.isNoticeClose = false
@@ -166,6 +171,7 @@ end
 function GameFriendScene:onExit( )
     print("GameScene:onExit( )")
     --FishGMF.setGameState(1)
+    FishGI.lockCount = 0;
     FishGI.FRIEND_ROOM_STATUS = 0
     FishGI.FRIEND_ROOMID = nil
     FishGI.isExitRoom = true
@@ -178,7 +184,7 @@ function GameFriendScene:onExit( )
     --移除监听器
     FishGI.eventDispatcher:removeAllListener();
     FishGI.gameScene = nil
-    FishGF.waitNetManager(true,nil,"exitGame")
+    FishGF.waitNetManager(true,nil,"exitGame",0)
 end
 
 function GameFriendScene:buttonClicked(viewTag, btnTag)

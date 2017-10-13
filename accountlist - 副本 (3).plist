@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"/>
+
+<plist version="1.0">
+    <dict>
+        <key>1</key>
+        <dict>
+            <key>isVisitor</key>
+            <string>游客589D4758</string>
+            <key>account</key>
+            <string>589D47587F08554D8B0AB88A320BB5C4</string>
+        </dict>
+        <key>2</key>
+        <dict>
+            <key>password</key>
+            <string>111111</string>
+            <key>account</key>
+            <string>lps001</string>
+        </dict>
+    </dict>
+</plist>

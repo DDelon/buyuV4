@@ -34,81 +34,43 @@ bool SkillLockManager::init()
 	mLockLoop = nullptr;
 	mLockArrow = nullptr;
 	mChainMap.clear();
-
+	mActMap.clear();
 	return true;
 }
 
-bool SkillLockManager::initLock()
+void SkillLockManager::reset()
 {
-
-	mLockNode = Node::create();
-	mLockLayer->addChild(mLockNode, 1);
-
-	//锁定目标的环
-	mLockLoop = Sprite::create("battle/effect/effect_lock_0.png");
-	mLockNode->addChild(mLockLoop);
-
-		//锁定的箭头
-	mLockArrow = Sprite::create("battle/effect/effect_lock_1.png");
-	mLockNode->addChild(mLockArrow, 1);
-
-	//锁链
-	for (int i = 1; i <= chainCount; i++)
+	printf("-------------SkillLockManager--------reset\n");
+	if (mLockLayer != nullptr)
 	{
-		auto spr = Sprite::create("battle/effect/effect_lock_2.png");
-		mLockLayer->addChild(spr,0);
-		//spr->setVisible(false);
-		mChainMap[i] = spr;
+		printf("---------------------closeUpdate");
+		mLockLayer->unschedule(schedule_selector(SkillLockManager::updateLock));
 	}
-
-	initLockAct();
-
-	return true;
-
-}
-
-bool SkillLockManager::initLockAct()
-{
-	//锁定目标的环运动
-	mLockLoop->stopAllActions();
-	mLockLoop->runAction(RepeatForever::create(RotateBy::create(4, 360)));
-
-	//锁定的箭头运动
-	mLockArrow->stopAllActions();
-	auto seq = Sequence::create(ScaleTo::create(0.13f, 0.8f), ScaleTo::create(0.87f, 1),nullptr);
-	mLockArrow->runAction(RepeatForever::create(seq));
-	return true;
+	if (mLockNode != nullptr)
+		setLockSpr(false);
+	nIsLock = false;
+	mLockNode = nullptr;
+	mAimFishMap.clear();
+	mLockLayer = nullptr;
+	mLockNode = nullptr;
+	mLockLoop = nullptr;
+	mLockArrow = nullptr;
+	mChainMap.clear();
+	mActMap.clear();
 }
 
 void SkillLockManager::playLockChangeAim()
 {
-	printf("------SkillLockManager:playLockChangeAim---------\n");
-
-	//锁定目标的箭头运动
-	mLockArrow->stopAllActions();
-	mLockArrow->setScale(1.8f);
-	mLockArrow->setOpacity(255 * 0.3f);
-
-	auto scaleAct1 = ScaleTo::create(0.13f, 0.9f);
-	auto OpacityAct1 = FadeTo::create(0.13f, 255);
-	auto spawnAct1 = Spawn::create(scaleAct1, OpacityAct1,nullptr);
-	
-	auto act2 = ScaleTo::create(0.03f, 1);
-	auto rotate = RotateBy::create(0.16f, 80);
-
-	auto endAct = CallFunc::create([=](){
-		initLockAct();
-	});
-	mLockArrow->runAction(rotate);
-	mLockArrow->runAction(Sequence::create(spawnAct1, act2, endAct, nullptr));
-
-
-	//锁定目标的环运动
-	mLockArrow->setScale(1.2f);
-	auto LoopSeq = Sequence::create(ScaleTo::create(0.13f, 0.8f), ScaleTo::create(0.03f, 1),nullptr);
-	mLockLoop->runAction(LoopSeq);
-
-
+	//printf("------SkillLockManager:playLockChangeAim---------\n");
+	auto childlist = mLockNode->getChildren();
+	for (auto child : childlist)
+	{
+		int tag = child->getTag();
+		if (mActMap[tag] != nullptr)
+		{
+			child->runAction(mActMap[tag]->clone());
+		}
+	}
 }
 
 void SkillLockManager::upDataLockSprAct(float aimPosX, float aimPosY)
@@ -127,13 +89,13 @@ void SkillLockManager::upDataLockSprAct(float aimPosX, float aimPosY)
 	Vec2 pos = palyr->getRoleData()->curPos;
 	float startPosX = pos.x;
 	float startPosY = pos.y;
+	int chainCount = mChainMap.size();
 	for (int i = 1; i <= chainCount; i++)
 	{
 		float posX = startPosX + (aimPosX - startPosX) / (chainCount + 2)*(i + 1);
 		float posY = startPosY + (aimPosY - startPosY) / (chainCount + 2)*(i + 1);
 		Vec2 curPos = mLockLayer->convertToNodeSpace(Vec2(posX, posY));
 		mChainMap[i]->setPosition(curPos);
-
 	}
 
 }
@@ -141,6 +103,7 @@ void SkillLockManager::upDataLockSprAct(float aimPosX, float aimPosY)
 void SkillLockManager::setLockSpr(bool isShow)
 {
 	mLockNode->setVisible(isShow);
+	int chainCount = mChainMap.size();
 	for (int i = 1;i <=chainCount; i++)
 	{
 		mChainMap[i]->setVisible(isShow);
@@ -162,8 +125,6 @@ void SkillLockManager::stopMyLock()
 	int playerId = LuaCppAdapter::getInstance()->getPlayerId();
 	mAimFishMap[playerId] = nullptr;
 	setLockSpr(false);
-	//回调lua
-
 }
 
 void SkillLockManager::updateLock(float dt)
@@ -178,7 +139,7 @@ void SkillLockManager::updateLock(float dt)
 		bullerCount = map.size();
 		if (bullerCount <= 0)
 		{
-			printf("------SkillLockManager:playLockChangeAim---------\n");
+			//printf("------SkillLockManager:playLockChangeAim---------\n");
 			SkillLockManager::getInstance()->stopMyLock();
 			return;
 		}
@@ -225,9 +186,12 @@ void SkillLockManager::updateLock(float dt)
 		Vec2 firstPos = parent->convertToWorldSpace(cannon->getPosition());
 		float  deg = atan((aimPos.x - firstPos.x) / (aimPos.y - firstPos.y));//h弧度
 		float  arg = (deg * 360) / (2 * 3.14);//化成角度了
+		if ((aimPos.y - firstPos.y) < 0)
+		{
+			arg = arg + 180;
+		}
 		cannon->setRotation(arg);
 	}
-
 
 }
 
@@ -246,7 +210,7 @@ void SkillLockManager::chooseFishByScore()
 		//回调lua
 		val["timelineId"] = aimFish->getTimelineId();
 		val["fishArrayId"] = aimFish->getFishArrayId();
-		BulletManager::getInstance()->changeBulletAim(playerId, aimFish->getTimelineId(), aimFish->getFishArrayId());
+		BulletManager::getInstance()->changeBulletAim(playerId, aimFish);
 		LuaCppAdapter::getInstance()->callLuaFunc("FishGMF", "CppToLua", "sendChangeAimFish", val);
 		playLockChangeAim();
 	}
@@ -270,7 +234,7 @@ cocos2d::ValueMap SkillLockManager::setLockData(ValueMap data)
 				mAimFishMap[playerId] = aimFish;
 				backMap["x"] = aimFish->getLockPosition().x;
 				backMap["y"] = aimFish->getLockPosition().y;
-				BulletManager::getInstance()->changeBulletAim(playerId, timelineId, fishArrayId);
+				BulletManager::getInstance()->changeBulletAim(playerId, aimFish);
 			}
 			else
 			{
@@ -285,7 +249,7 @@ cocos2d::ValueMap SkillLockManager::setLockData(ValueMap data)
 	}
 	else if (setType == 2)		//停止我的锁定
 	{
-		printf("----------setType == 2-------------\n");
+		//printf("----------setType == 2-------------\n");
 		nIsLock = false;
 	}
 	else if (setType == 3)		//切换目标鱼
@@ -295,6 +259,7 @@ cocos2d::ValueMap SkillLockManager::setLockData(ValueMap data)
 			Fish* aimFish = FishFrameManager::getInstance()->getFishByID(timelineId, fishArrayId);
 			if (aimFish != nullptr)
 			{
+				
 				mAimFishMap[playerId] = aimFish;
 				backMap["x"] = aimFish->getLockPosition().x;
 				backMap["y"] = aimFish->getLockPosition().y;
@@ -303,17 +268,19 @@ cocos2d::ValueMap SkillLockManager::setLockData(ValueMap data)
 				{
 					playLockChangeAim();
 				}
+				BulletManager::getInstance()->changeBulletAim(playerId, aimFish);
 			}
 			else
 			{
 				mAimFishMap[playerId] = nullptr;
+				//printf("----------mAimFishMap == nullptr----timelineId=%d,fishArrayId=%d---------\n", timelineId, fishArrayId);
 			}
 		}
 		else
 		{
 			mAimFishMap[playerId] = nullptr;
 		}
-		BulletManager::getInstance()->changeBulletAim(playerId, timelineId, fishArrayId);
+		
 
 	}
 	return backMap;
@@ -328,6 +295,29 @@ Fish* SkillLockManager::getAimFish(int playerId)
 void SkillLockManager::setAimFish(int playerId, Fish* aimFish)
 {
 	mAimFishMap[playerId] = aimFish;
+}
+
+void SkillLockManager::setLuaNode(Node* bindNode, ValueMap data)
+{
+	string bindType = data["bindType"].asString();
+	if (bindType == "lockNode")
+	{
+		mLockNode = bindNode;
+		auto childlist = mLockNode->getChildren();
+		for (auto child : childlist)
+		{
+			int tag = child->getTag();
+			auto act = child->getActionByTag(tag);
+			mActMap[tag] = act->clone();
+			mActMap[tag]->retain();
+			child->resume();
+		}
+	}
+	else if (bindType == "chain")
+	{
+		int index = data["index"].asInt();
+		mChainMap[index] = (Sprite*)bindNode;
+	}
 }
 
 
