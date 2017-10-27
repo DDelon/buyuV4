@@ -262,7 +262,7 @@ void Fish::lockPointFlipX()
 void Fish::selectLockPoint(Vec2 pos)
 {
 
-	DebugLog::getInstance()->log("pos x:" + Value(pos.x).asString() + " pos y:" + Value(pos.y).asString());
+	//DebugLog::getInstance()->log("pos x:" + Value(pos.x).asString() + " pos y:" + Value(pos.y).asString());
 	//默认的锁定点也加入这个容器
 	if (mHandAimPoint.size() > 1)
 	{
@@ -550,7 +550,7 @@ void Fish::setFishId(int fishId, int timelineId, int fishArrayId, bool isCallFis
 void Fish::getEffectedFishes(int bulletRate, ValueVector &fishTab)
 {
 	fishTab.clear();
-	DebugLog::getInstance()->log("timelineId: " + Value(mTimelineId).asString() + " fishArrayId: " + Value(mFishArrayId).asString());
+	//DebugLog::getInstance()->log("timelineId: " + Value(mTimelineId).asString() + " fishArrayId: " + Value(mFishArrayId).asString());
 	std::vector<Fish *> effectedFishes;
 	if (mFishType == 6)
 	{

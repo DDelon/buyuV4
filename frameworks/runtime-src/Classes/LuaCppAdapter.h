@@ -122,7 +122,7 @@ private:
 	void updateInline(ValueMap data);
 
 	//µÃµ½ÅÚ±¶
-	ValueMap getGunRate(int type, int curRate, int minGunRate, int maxGunRate, int coin);
+	ValueMap getGunRate(int type, int curRate, int minGunRate, int maxGunRate, float coin);
 	ValueMap getRoomFish(int curRoomID);
 	ValueMap getShopData();
 	ValueMap getItemData(int itemID);

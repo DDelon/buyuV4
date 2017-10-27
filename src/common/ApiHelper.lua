@@ -85,7 +85,7 @@ local function getThirdApi_(name, channelId)
     if channelId == nil then
         channelId = CHANNEL_ID
     end
-	local ver_str = FishGF.getHallVerison()
+    local ver_str = FishGF.getHallVerison()
     return string.format("%s%s/%s/%d/%s/%s", thirdapi_, name, APP_ID, channelId, ver_str, REGION_CODE)
 end
 
@@ -744,8 +744,9 @@ end
 
 function Dapi:thirdLogin(channel, data, callback)
     data.type = channel
-
-	local url = getThirdApi_("/login");
+    data.udid = Helper.GetDeviceCode()
+    local url = getThirdApi_("/login");
+    dump(data)
 	Http:Post(url, callback, data, true)
 end
 

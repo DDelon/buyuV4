@@ -54,6 +54,7 @@ void Nets::initEffect(int effectId)
 	pEffect->setScale(0.8);
 	pEffect->runAction(Sequence::create(ScaleTo::create(0, 0.8, 0.8), ScaleTo::create(0.08, 1.3, 1.3), FadeTo::create(0.17, 1.5), RemoveSelf::create(), NULL));
 	pEffect->setPosition(Vec2(_pNetSprite->getContentSize().width/2, _pNetSprite->getContentSize().height/2));
+	pEffect->setBlendFunc(BlendFunc::ADDITIVE);
 	//
 	//pEffect->setVisible(false);
 	pEffect->setTag(8888);

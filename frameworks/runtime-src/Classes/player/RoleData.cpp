@@ -142,7 +142,7 @@ void RoleData::setAddFlyProp(bool isSure, int propId, int addCount)
 	_eventDispatcher->dispatchCustomEvent("refreshUiByEvent", &refreshData);
 }
 
-void RoleData::isSurePropData(bool isSure, int propId, int unSureCount)
+void RoleData::isSurePropData(bool isSure, int propId, int unSureCount, string stringProp)
 {
 
 	if (isSure == false)
@@ -151,6 +151,7 @@ void RoleData::isSurePropData(bool isSure, int propId, int unSureCount)
 		PropFlyingData unSureData;
 		unSureData.propId = propId;
 		unSureData.flyingCount = unSureCount;
+		unSureData.stringProp = stringProp;
 		mUnSureCountVector.push_back(unSureData);
 		getPropData(propId).unSureCount += unSureCount;
 	}
@@ -160,10 +161,21 @@ void RoleData::isSurePropData(bool isSure, int propId, int unSureCount)
 		std::vector <PropFlyingData>::iterator it;
 		for (it = mUnSureCountVector.begin(); it != mUnSureCountVector.end(); it++)
 		{
-			if (it->propId == propId && it->flyingCount == unSureCount)
+			if (stringProp == "")
 			{
-				break;
+				if (it->propId == propId && it->flyingCount == unSureCount)
+				{
+					break;
+				}
 			}
+			else
+			{
+				if ( it->propId == propId && it->stringProp == stringProp)
+				{
+					break;
+				}
+			}
+
 		}
 
 		if (it != mUnSureCountVector.end())

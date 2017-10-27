@@ -47,7 +47,7 @@ end
 function CreateLayer:showLayer()
     self.super.showLayer(self)
     self:onClickprop_1(self)
-    self:onClickcount_1(self)
+    self:onClickcount_3(self)
     self:onClicktime_1(self)    
 end
 

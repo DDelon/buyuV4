@@ -1602,5 +1602,12 @@ local a = {
    NULL = "",
    NULL = "",
    },
+["230"] = {
+   id = "230",
+   prepath = "common/com_pic_photo_1",
+   loadtype = "png",
+   NULL = "",
+   NULL = "",
+   },
 }
 return a

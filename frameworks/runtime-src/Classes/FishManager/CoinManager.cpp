@@ -584,7 +584,7 @@ void CoinManager::setBlastCoinEff(float delay, Node* parent, Vec2 pos)
 	coin2->setPosition(pos);
 	auto animation2 = Animation::create();
 	int gameType = mGameType;
-	log("------------------setBlastCoinEff------------gameType=%d", gameType);
+	//log("------------------setBlastCoinEff------------gameType=%d", gameType);
 	for (int i = 0; i < 9; i++)
 	{
 		if (gameType == 1)

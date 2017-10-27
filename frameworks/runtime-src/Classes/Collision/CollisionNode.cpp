@@ -25,7 +25,8 @@ bool CollisionNode::init()
 
 bool CollisionNode::obbCollisionWithNode(CollisionNode *pCollisionNode)
 {
-	if (_isCleaning)
+	
+	if (_isCleaning || (pCollisionNode == nullptr))
 		return false;
 	bool isCollision = false;
 	if (_isUseRect)

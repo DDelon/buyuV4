@@ -373,6 +373,7 @@ function GameNet:OnPlayerShoot(data)
         dataTab.effectId = (data.isViolent and FishCD.SKILL_TAG_VIOLENT or 0)
         dataTab.cost = (data.isViolent and dataTab.bulletRate*2 or dataTab.bulletRate)
         dataTab.fireType = 2
+        dataTab.bulletId = data.bulletId;
         FishGMF.pushRefreshData(dataTab)
         return;
     end   
@@ -423,6 +424,7 @@ function GameNet:OnPlayerShoot(data)
     dataTab.effectId = (data.isViolent and FishCD.SKILL_TAG_VIOLENT or 0)
     dataTab.cost = (data.isViolent and dataTab.bulletRate*2 or dataTab.bulletRate)
     dataTab.fireType = 0
+    dataTab.bulletId = data.bulletId;
     FishGMF.pushRefreshData(dataTab)
 
     --其他玩家炮塔转动
@@ -458,7 +460,7 @@ function GameNet:OnHit(data)
         FishGI.eventDispatcher:dispatch("UpdateThunderRate", newThunderRate)
         return
     end
-  
+
 end 
 
 --核弹申请使用结果
@@ -470,10 +472,16 @@ end
 
 --核弹爆炸
 function GameNet:OnNBombHit(data)
-    dump(data)
+    --dump(data)
     if data.isSuccess ~= true then
         local failureId = data.failReason
-        print("--OnNBombHit---failReason-")
+        local useType = data.useType
+        local nPropID = data.nPropID
+        FishGF.print("--OnNBombHit-fail---failureId="..failureId.."-useType="..useType.."---nPropID="..nPropID)
+        local node  = FishGI.gameScene.uiSkillView["Skill_"..nPropID]
+        if node ~= nil then
+            node:clearDataFromPool(useType)
+        end
         return;
     end
     local chairId = FishGI.gameScene.playerManager:getPlayerChairId(data.playerId);
@@ -596,7 +604,6 @@ end
 function GameNet:OnFishGroupNotify(data)
     local  message = FishGF.getChByIndex(800000085)
     FishGF.showSystemTip(message)
-    FishGI.isFishGroupCome = true
 
     local function clearFunc()
         if FishGI.gameScene.isFishCome then
@@ -605,6 +612,7 @@ function GameNet:OnFishGroupNotify(data)
         end
         FishGI.GameEffect:fishGroupCome()
         LuaCppAdapter:getInstance():fishAccelerateOut();
+        
         
     end
     FishGF.delayExcute(14-FishCD.FISH_GROUP_COMING_CLEAR_TIME, clearFunc)
@@ -782,7 +790,6 @@ end
 
 --锁定变换目标
 function GameNet:sendBulletTargetChange(data)
-    FishGF.print("-0-sendBulletTargetChange----")
     if data == nil then
         return
     end

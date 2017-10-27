@@ -371,6 +371,7 @@ void LuaCppAdapter::playerFire(ValueMap data)
 	Player* player = PlayerManager::getInstance()->getPlayerById(playerId);
 	if (player == NULL)
 	{
+		printf("-------playerFire----player == NULL--------");
 		return;
 	}
 
@@ -444,7 +445,7 @@ void LuaCppAdapter::playerFire(ValueMap data)
 		int fishArrayId = data["fishArrayId"].asInt();
 		int effectId = data["effectId"].asInt();
 		Vec2 pos = Vec2(data["pos"].asValueMap()["x"].asFloat(), data["pos"].asValueMap()["y"].asFloat());
-		player->getRoleData()->isSurePropData(false, propId, propCount);
+		player->getRoleData()->isSurePropData(false, propId, propCount, bulletId);
 		BulletManager::getInstance()->createBullet(bulletId, playerId, pos, angle, lifeTime, timelineId, fishArrayId, rate, effectId);
 		
 		//已用的子弹计入缓存
@@ -452,9 +453,10 @@ void LuaCppAdapter::playerFire(ValueMap data)
 	}
 	else if (fireType == 2)	//自己确认已发射子弹，真扣钱
 	{
+		string bulletId = data["bulletId"].asString();
 		int newGold = player->getRoleData()->getPropData(propId).realCount - propCount;
 		player->getRoleData()->setPropRealData(propId, newGold);
-		player->getRoleData()->isSurePropData(true, propId, propCount);
+		player->getRoleData()->isSurePropData(true, propId, propCount, bulletId);
 
 		//已用的子弹更新
 		int newUsedBullet = player->getRoleData()->getPropData(USED_BULLET).realCount + propCount;
@@ -526,7 +528,7 @@ cocos2d::ValueMap LuaCppAdapter::getLVByExp(int curExp)
 
 }
 
-ValueMap LuaCppAdapter::getGunRate(int type, int curRate, int minGunRate, int maxGunRate, int coin)
+ValueMap LuaCppAdapter::getGunRate(int type, int curRate, int minGunRate, int maxGunRate, float coin)
 {
 	printf("-----getGunRate---type=%d----curRate=%d---minGunRate=%d---maxGunRate=%d---coin=%d\n", type, curRate, minGunRate, maxGunRate, coin );
 	TableMap temp = ParseGameData::getInstance()->getTabMap("cannon");
@@ -1125,7 +1127,7 @@ cocos2d::ValueMap LuaCppAdapter::myCreateBullet(ValueMap data)
 	}
 
 	RoleData* roleData = player->getRoleData();
-	int showGold = roleData->getGlod().realCount - roleData->getGlod().flyingCount - roleData->getGlod().unSureCount;
+	float showGold = roleData->getGlod().realCount - roleData->getGlod().flyingCount - roleData->getGlod().unSureCount;
 	if (showGold <= 0)
 	{
 		map["isSucceed"] = 5;
@@ -1173,7 +1175,11 @@ cocos2d::ValueMap LuaCppAdapter::myCreateBullet(ValueMap data)
 		{
 			map["isSucceed"] = 3;
 			map["currentGunRate"] = curMaxRate;
-			roleData->currentGunRate = curMaxRate;
+			if (curMaxRate > 0)
+			{
+				roleData->currentGunRate = curMaxRate;
+			}
+			
 			return map;
 		}
 	}
@@ -1186,7 +1192,10 @@ cocos2d::ValueMap LuaCppAdapter::myCreateBullet(ValueMap data)
 		if (curMaxRate != roleData->currentGunRate)
 		{
 			map["currentGunRate"] = curMaxRate;
-			roleData->currentGunRate = curMaxRate;
+			if (curMaxRate > 0)
+			{
+				roleData->currentGunRate = curMaxRate;
+			}
 		}
 		return map;
 	}

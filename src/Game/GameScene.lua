@@ -216,6 +216,10 @@ function GameScene:initUILayer()
         self.playerInfoLayer[i]:setPosByChairid(i)
         self:addChild(self.playerInfoLayer[i],FishCD.ORDER_LAYER_VIRTUAL+10);
         self.playerInfoLayer[i]:setVisible(false)
+
+        if i == 1 then
+            self.playerInfoLayer[i]:registPropEvent()
+        end
     end
 
     self.uiNewbieTask = require("Game/NewbieTask/NewbieTask").create()
@@ -305,7 +309,7 @@ function GameScene:onEnter( )
     LuaCppAdapter:getInstance():exitGame()
     FishGMF.setGameState(3)
     FishGI.SERVER_STATE = 0
-
+    FishGI.isLock = false
     FishGI.FRIEND_ROOM_STATUS = 0
     FishGI.FRIEND_ROOMID = nil
     self.uiSkillView:initSkill()
@@ -326,6 +330,7 @@ function GameScene:onExit( )
     print("GameScene:onExit( )")
     FishGI.lockCount = 0;
     FishGI.isAutoFire = false
+    FishGI.isLock = false
     FishGMF.clearRefreshData()
     FishGI.AudioControl:pauseMusic()
     FishGI.AudioControl:stopAllEffects()
@@ -407,11 +412,12 @@ function GameScene:startGame(data)
     end);
 
     FishGI.eventDispatcher:registerCustomListener("FishGroupCome", self, function(valTab) 
-        self.isFishCome = true;
+        self.isFishCome = true;  --鱼潮来临了
         LuaCppAdapter:getInstance():fishGroupCome(valTab);
     end);
 
     FishGI.eventDispatcher:registerCustomListener("TimeLineCome", self, function(valTab) 
+        self.isFishCome = false;
         LuaCppAdapter:getInstance():fishTimeLineCome(valTab);
     end);
 
@@ -489,7 +495,6 @@ function GameScene:startGame(data)
 
     --鱼潮是否要来临
     if isGroup == false and fishGroupComing == true then
-        FishGI.isFishGroupCome = true
         local  message = FishGF.getChByIndex(800000085)
         FishGF.showSystemTip(message)
         local delayTime = 0;
@@ -505,8 +510,6 @@ function GameScene:startGame(data)
             LuaCppAdapter:getInstance():fishAccelerateOut();
         end
         FishGF.delayExcute(delayTime, clearFunc)
-    else
-        FishGI.isFishGroupCome = false
     end
 
 
@@ -636,6 +639,7 @@ function GameScene:exitGame()
     self:closeAllSchedule();
     LuaCppAdapter:getInstance():exitGame();
     FishGI.isPlayerFlip = false;
+    FishGI.isLock = false
     print("------GameScene---exitGame-----2-----")
 end
 

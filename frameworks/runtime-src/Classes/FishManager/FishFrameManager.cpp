@@ -603,7 +603,7 @@ void FishFrameManager::getThunderPool(int bulletRate, std::vector<Fish *> &effec
 void FishFrameManager::getSameFishType(int fishType, std::vector<Fish *> &effectedFishes)
 {
 	effectedFishes.clear();
-	DebugLog::getInstance()->log("same fish type bomb fishtype: " + Value(fishType).asString());
+	//DebugLog::getInstance()->log("same fish type bomb fishtype: " + Value(fishType).asString());
 	//同类炸弹
 	Vector<Node*> &fishList = this->getAllFish();
 	for (int i = 0; i < fishList.size(); i++)
@@ -986,8 +986,15 @@ void FishFrameManager::onHit(ValueMap data)
 
 		mapGem["propId"] = propId;
 		mapGem["propCount"] = propCount;
-		PlayerManager::getInstance()->addTrueAndFlyProp(mapGem);
-
+		bool isSucceed = data["isSuccess"].asBool();
+		if (isSucceed)
+		{
+			PlayerManager::getInstance()->addTrueAndFlyProp(mapGem);
+		}
+		else
+		{
+			DebugLog::getInstance()->log("-------------bomb is faile-----------------");
+		}
 		//清除自己的缓存
 		int myPlayerId = PlayerManager::getInstance()->getMyPlayerId();
 		if (myPlayerId == playerId)

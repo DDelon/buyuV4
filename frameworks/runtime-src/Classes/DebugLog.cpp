@@ -82,11 +82,12 @@ void DebugLog::print(std::string theme, std::string sLog)
 		sprintf(date, "%d-%02d-%02d %02d:%02d:%02d", wtm.wYear, wtm.wMonth, wtm.wDay, wtm.wHour, wtm.wMinute, wtm.wSecond);
 		fprintf(_pFile, "%s %s", date, sContent.c_str());
 #endif
+		fflush(_pFile);
 	}
 
 
 
-	//fflush(_pFile);
+	
 
 
 }
@@ -95,7 +96,7 @@ void DebugLog::log(std::string slog)
 {
 	this->print("log", slog);
 	//CCLOG("%s", slog.c_str());
-	cocos2d::log("%s", slog.c_str());
+	cocos2d::log("lua:%s", slog.c_str());
 }
 
 void DebugLog::startCount()

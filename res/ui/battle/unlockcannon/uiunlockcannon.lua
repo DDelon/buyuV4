@@ -283,7 +283,7 @@ layout:setRightMargin(-129.0000)
 layout:setTopMargin(-136.5000)
 layout:setBottomMargin(-184.5000)
 spr_effect_unlock:setBlendFunc({src = 770, dst = 1})
-Node:addChild(spr_effect_unlock)
+panel:addChild(spr_effect_unlock)
 
 --Create Animation
 result['animation'] = ccs.ActionTimeline:create()

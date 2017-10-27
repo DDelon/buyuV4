@@ -57,9 +57,11 @@ struct PropFlyingData
 {
 	int propId;
 	int flyingCount;
+	std::string stringProp;	//属性
 	PropFlyingData() {
 		propId = -1;
 		flyingCount = 0;
+		stringProp = "";
 	}
 };
 
@@ -97,7 +99,7 @@ public:
 	PropData &getGlod() { return getPropData(GOLD); }
 	PropData &getGem() { return getPropData(GEM); }
 
-	void isSurePropData(bool isSure,int propId, int unSureCount);
+	void isSurePropData(bool isSure, int propId, int unSureCount, std::string stringProp = "");
 
 	//手动接收数据
 	void setAddFlyProp(bool isSure, int propId, int addCount);

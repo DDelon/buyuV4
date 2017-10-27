@@ -8,6 +8,7 @@ end
 
 function GameEffect:init()
     self.playerData = {}
+    self.sid = {}
 end
 
 function GameEffect:initGameEff()
@@ -200,7 +201,9 @@ function GameEffect:closeAllSchedule()
     if self.bossRateCahnge ~= nil then
         self.bossRateCahnge:closeAllSchedule()
     end
-    
+    for k,v in pairs(self.sid) do
+        cc.Director:getInstance():getScheduler():unscheduleScriptEntry(v)
+    end
 end
 --预先播放一次
 function GameEffect:hideEffect()
@@ -1327,7 +1330,7 @@ function GameEffect:createDropProp(dataTab)
     local Zorder = dataTab.Zorder
 
     if Zorder == nil then
-        Zorder = FishCD.ORDER_LAYER_TRUE
+        Zorder = FishCD.ORDER_LAYER_TRUE - 1
     end
     if parent == nil then
         parent = cc.Director:getInstance():getRunningScene()
@@ -1385,11 +1388,13 @@ function GameEffect:jumpingNumber(widget, total_time,count, curCoin, callback)
     local deltCoin = count - curCoin
     local period = 0
     
-    self.sid = cc.Director:getInstance():getScheduler():scheduleScriptFunc(function (dt)
+    local scheduler = cc.Director:getInstance():getScheduler()
+    
+    widget.sid_lo = scheduler:scheduleScriptFunc(function (dt)
         period = period + dt
         if period >= total_time then
             widget:setString(math.floor(count))
-            cc.Director:getInstance():getScheduler():unscheduleScriptEntry(self.sid)
+            cc.Director:getInstance():getScheduler():unscheduleScriptEntry(widget.sid_lo)
             if callback ~= nil then
                 callback()
             end
@@ -1400,6 +1405,7 @@ function GameEffect:jumpingNumber(widget, total_time,count, curCoin, callback)
         local delt = math.floor(deltCoin*percent)
         widget:setString(curCoin + delt)
     end, 0, false)
+    self.sid[#self.sid + 1] = widget.sid_lo
 end
 
 

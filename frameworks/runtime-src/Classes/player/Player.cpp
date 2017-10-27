@@ -2,6 +2,7 @@
 #include "StringUtil.h"
 #include "PlayerManager.h"
 #include "LuaCppAdapter.h"
+#include "DebugLog.h"
 
 void Player::shoot(int propId, int rate)
 {
@@ -55,7 +56,7 @@ bool Player::init()
 
 void Player::refreshGoldShow(int showCount, int addCount)
 {
-	//printf("------------refreshGoldShow-showCount=%d----addCount=%d--------\n", showCount, addCount);
+	//printf("------------refreshGoldShow-playerId=%d,showCount=%d,addCount=%d--------\n", getRoleData()->playerId, showCount, addCount);
 	//ÆÆ²ú½â³ý
 	if (getRoleData()->getIsBankup() == true && showCount >0)
 	{
@@ -81,6 +82,18 @@ void Player::refreshGoldShow(int showCount, int addCount)
 			LuaCppAdapter::getInstance()->callLuaFunc("FishGMF", "CppToLua", "gunRateRevert", val);
 		}
 	}
+
+// 	//
+// 	if (mGoldText != NULL && myPlayerId == getRoleData()->playerId)
+// 	{
+// 		string num = mGoldText->getString();
+// 		if (num != IntToString(showCount))
+// 		{
+// 			string str = StringUtil::format("------------refreshGoldShow-playerId=%d,trueCoin=%d,showCount=%d,addCount=%d--------", myPlayerId, getRoleData()->getGlod().realCount, showCount, addCount);
+// 			DebugLog::getInstance()->log(str);
+// 		}
+// 	}
+// 	//
 
 	if (addCount > 0)
 	{
