@@ -25,8 +25,8 @@ CreateLayer.RESOURCE_BINDING  = {
     ["text_6"]         = { ["varname"] = "text_6" }, 
     ["text_7"]         = { ["varname"] = "text_7" }, 
     ["text_8"]         = { ["varname"] = "text_8" }, 
-    ["text_cell"]         = { ["varname"] = "text_cell" }, 
-    ["fnt_count"]         = { ["varname"] = "fnt_count" }, 
+    ["text_cell"]      = { ["varname"] = "text_cell" }, 
+    ["fnt_count"]      = { ["varname"] = "fnt_count" }, 
 }
 
 function CreateLayer:onCreate( ... )
