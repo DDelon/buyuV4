@@ -395,6 +395,8 @@ function HallManager:onAppEnterForeground()
 
     if device.platform == "ios" then
         self:doAutoLogin(2)
+    elseif CHANNEL_ID == CHANNEL_ID_LIST.mz then
+        self:doAutoLogin(1)
     else
         self:doAutoLogin(0.1)
     end
@@ -827,8 +829,19 @@ function HallManager:addHallNotice()
         local version = ""
         local updateMsg = ""
         for key, val in pairs(list) do
-            version = val["title"]
-            updateMsg = val["body"]
+            dump(val)
+            local endTime = FishGF.getTimeByString(val["end_time"])
+            local curTime = os.time();
+
+            if endTime > curTime then
+                version = val["title"]
+                updateMsg = val["body"]
+            end
+            
+        end
+
+        if updateMsg == nil or updateMsg == "" then
+            return;
         end
         self.updateNotice = require("Update/bigUpdate/BigUpDateNotice").create();
         self.updateNotice:setCurVersions(version)

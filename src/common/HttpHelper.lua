@@ -2,11 +2,15 @@
 -- Date: 2016-08-25 10:43:06
 local M = {}
 
+local HttpParams= require("common.HttpParams")
+
 --http事件表
 local e = {};
 
-local HTTPS_ = "https"
+
+local HTTPS_ = IS_LOCAL_TEST and "http" or "https"
 local HTTP_ = "http"
+local TIME_OUT_=7
 
 local function startwith_(source, str)
     local len = string.len(str)
@@ -45,55 +49,26 @@ end
 -- 下载进度变化
 function e.OnHttpDataArrival(http, size, dowanload, speed)
     if http and http.onProgressChanged then
-        http.onProgressChanged(size.downloadobj, speed)
+        http.onProgressChanged(size,dowanload, speed)
     end
-end
-
--- 加密后的字符串替换处理将其中的 “/” 替换为 “-”，将 “+” 替换为 “,”。结果为：
-local function cryptencode_(crypt)
-    crypt = Helper.StringReplace(Helper.StringReplace(crypt, "/", "-"), "+", ",")
-    return crypt
-end
-
--- 解密 时字符串替换处理
-local function cryptdecode_(crypt)
-    local input = string.gsub(crypt, "%-", "/")
-    return (string.gsub(input, "%,", "+"))
-end
-
--- 拼接参数
-local function joinParams_(params)
-    local param_str = ""
-    for k, v in pairs(checktable(params)) do
-        param_str = param_str .. string.format("%s=%s&", tostring(k), tostring(v));
-    end
-    if param_str and string.len(param_str) > 1 then
-        param_str = string.sub(param_str, 1, -2)
-    end
-    return param_str
-end
-
--- 加密
-local function encrypt_(params)
-    local crypt = Helper.CryptStr(params, URLKEY);
-    return cryptencode_(crypt)
 end
 
 -- -- 拼接参数
 local function joinParams_(params)
-    local param_str = ""
-    for k, v in pairs(checktable(params)) do
-        param_str = param_str .. string.format("%s=%s&", tostring(k), tostring(v));
-    end
-    if param_str and string.len(param_str) > 1 then
-        param_str = string.sub(param_str, 1, -2)
-    end
-    return param_str
+    return HttpParams:BuildQuery(params) 
 end
 
+-- -- 加密
+local function encrypt_(params)
+    return HttpParams:Encrypt(params) 
+end
 --生成 URL-encode 之后的请求字符串
 function M:BuildQuery(params)
     return joinParams_(params)
+end
+
+function M:BuildEncryptData(params)
+    return HttpParams:BuildEncryptData(params)
 end
 
 function M:UploadFile(url, callback, path, params)
@@ -108,17 +83,18 @@ function M:UploadFile(url, callback, path, params)
     http.event = e;
     if callback then http.callback = callback; end
     http:AddRef();
-    printf("---UploadFile url:" .. url)
+    printf("---UploadFile url:%s filepaht %s" ,tostring(url),tostring(path))
     if http:StartUpload(url, path, "file", headers) then
         return http;
     elseif callback then
         callback("无法连接到服务器!");
     end
     http:Release();
+    return http
 end
 
 -- get方式请求
-function M:Get(url, callback, params, iscrypt)
+function M:Get(url, callback, params, iscrypt,sotimeout,connectiontimeout)
     if params then
         if type(params) == "table" then
             params = joinParams_(params)
@@ -129,11 +105,12 @@ function M:Get(url, callback, params, iscrypt)
             url = url .. "?" .. params
         end
     end
-    return self:SendRequest(url, callback)
+    return self:SendRequest(url, callback,"","",false,"",sotimeout,connectiontimeout)
 end
 
 -- post 方式请求
-function M:Post(url, callback, params, iscrypt)
+function M:Post(url, callback, params, iscrypt,sotimeout,connectiontimeout)
+
     if params then
         if type(params) == "table" then
             params = joinParams_(params)
@@ -143,36 +120,45 @@ function M:Post(url, callback, params, iscrypt)
             params = encrypt_(params)
           --  printf("HttpPostParams encrypt_:" .. params)
         end
-        
 
     end
-    return self:SendRequest(url, callback, "", "", true, params)
+    return self:SendRequest(url, callback, "", "", true, params,sotimeout,connectiontimeout)
 end
 
 --[[
 --发送请求
 ]]
-function M:SendRequest(url, callback, filename, headers, post, data)
+function M:SendRequest(url, callback, filename, headers, post, data,sotimeout,connectiontimeout)
     post = post or false
     filename = filename or ""
     headers = headers or ""
     data = data or ""
     if startwith_(url, "://") then
         url = HTTPS_ .. tostring(url)
-    end
+    end 
+    return self:Start(CHttpClient.New(),url,callback, filename, headers, post, data,sotimeout,connectiontimeout)
+end
 
-    local http = CHttpClient.New();
+function M:Start(http,url,callback, filename, headers, post, data,sotimeout,connectiontimeout)
+    http = http or CHttpClient.New()
     http.event = e;
     if callback then http.callback = callback; end
-    http:AddRef();
-
+    http:AddRef()
+    sotimeout= sotimeout or TIME_OUT_*2
+    connectiontimeout=connectiontimeout or TIME_OUT_
+    if checkint(sotimeout) >0 then
+        http:SetSoTimeout(checkint(sotimeout))
+    end
+    if checkint(connectiontimeout)>0  then
+        http:SetConnectionTimeout(checkint(connectiontimeout))
+    end
     if http:Start(url, filename, headers, post, data, #data) then
+        http.packdata={url,callback, filename, headers, post, data}
         return http;
     elseif callback then
         callback("无法连接到服务器");
     end
-    http:Release();
-    return http
+    http:Release();    
 end
 
 -- 添加http下载进度监听

@@ -35,22 +35,11 @@ function UpDateScene:initUIWithChildGame()
 	self.view:setVersion(self.version)
 	self:addChild(self.view);
 
-
 end
 
 function UpDateScene:init(urlkey, appid, channelid, version)
 	self.sceneName = "UpDateScene"
-	
-	--
-	self.appid = appid or APP_ID;
-	self.channelid = channelid or CHANNEL_ID;
-	self.version = version;
 
-
-    --FishGI.AudioControl:pauseMusic()
-
-	self.oldKey = URLKEY;
-	URLKEY = urlkey;
 	local function getChannelId()
 	    if device.platform == "android" then
 	        local luaBridge = require("cocos.cocos2d.luaj");
@@ -68,6 +57,18 @@ function UpDateScene:init(urlkey, appid, channelid, version)
 	if device.platform == "android" then
 		CHANNEL_ID = getChannelId()
 	end
+	
+	--
+	self.appid = appid or APP_ID;
+	self.channelid = channelid or CHANNEL_ID;
+	self.version = version;
+
+
+    --FishGI.AudioControl:pauseMusic()
+
+	self.oldKey = URLKEY;
+	URLKEY = urlkey;
+	
 
 	self.update = require("Update/UpdateModule/Update").create();
 
@@ -285,27 +286,16 @@ function UpDateScene:runNextScene()
 		FishGI.mainManagerInstance:createLoginManager();
 
 		if FishGF.isThirdSdk() and FishGF.isThirdSdkLogin() then
-			local function loginResult(state, data)
+			local function loginResult(data)
 				print("------------------------loginResult")
 				FishGF.waitNetManager(false);
-				if state then
-					FishGF.showMessageLayer(FishCD.MODE_MIDDLE_OK_ONLY,"解析错误！",nil)
-				else
-					local resultMsg = nil;
-					local ok, datatable = pcall(function() return loadstring(data)(); end)
-					if ok == false then
-						resultMsg = json.decode(data)
-					else
-						resultMsg = {}
-						resultMsg.data = datatable
-					end
-					local resultData = resultMsg.data
+				if data.msg == "ok" then
 					local valTab = {};
-					valTab.session = resultData.code
-					valTab.userid = resultData.id
-					valTab.serverip = resultData.ip
-					valTab.serverport = resultData.port
-					FishGI.loginScene.net:loginByThird(valTab);
+					valTab.session = data.code
+					valTab.userid = data.id
+					valTab.serverip = data.ip
+					valTab.serverport = data.port
+					FishGI.loginScene.net:loginByThird(valTab)
 				end
 			end
 			FishGI.GameCenterSdk:trySDKLogin({type = 1},loginResult)

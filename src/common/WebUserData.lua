@@ -336,13 +336,13 @@ end
 -- 身份证尾号后4位，仅在绑定身份证时返回
 function UserData:GetIdCardSuffix()
     lazyInit_()
-    return gg.IIF(userWebData.idcard == nil,"未激活","**********"..(userWebData.idcard or ""))
+    return FishGF.iif(userWebData.idcard == nil,"未激活","**********"..(userWebData.idcard or ""))
 end
 
 --获取手机号尾数
 function UserData:GetPhoneSuffix()
     lazyInit_()
-    return gg.IIF(userWebData.phone  == nil,"—","*******"..(userWebData.phone or ""))
+    return FishGF.iif(userWebData.phone  == nil,"—","*******"..(userWebData.phone or ""))
 end
 
 --获取兑换话费人数

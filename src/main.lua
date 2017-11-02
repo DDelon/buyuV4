@@ -62,8 +62,10 @@ local function main()
     director:setAnimationInterval(1.0 / 60)
 
     --require("app.MyApp"):create():run()
+
+
     cc.exports.mainInstance = require("MainManager").create();
-    local hotScene = require("Update/UpDateScene").create(URLKEY, APP_ID, CHANNEL_ID, HALL_WEB_VERSION)
+    local hotScene = require("Update/UpDateScene").create(URLKEY, APP_ID, nil, HALL_WEB_VERSION)
     if cc.Director:getInstance():getRunningScene() then
         cc.Director:getInstance():replaceScene(hotScene)
     else

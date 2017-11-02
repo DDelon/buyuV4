@@ -8,6 +8,7 @@ local evt = {};
 local LoginNet = FishGF.ClassEx("LoginNet", function()
 	local obj =  CLoginManager.New()
 	obj.event = evt;
+	obj.http=require("common.HttpProxyHelper").new():RegisterHttpProxyEvent(obj)
 	return obj;
 end)
 
@@ -33,6 +34,7 @@ end
 function LoginNet:initServerConfig()
 	self.serverIndex = 1;
 	self.autoLogin = false;
+	self.isFirstCreateUser = false;
 end
 
 function LoginNet:updateAccountPass(account, password)
@@ -43,6 +45,7 @@ end
 
 function LoginNet:DoAutoLogin()
 	print("-------------DoAutoLogin-------------")
+	self.isFirstCreateUser = false;
 	self.autoLogin = true;
 	if self.loginType == FishCD.LOGIN_TYPE_BY_NAME then
 		--账号密码登录
@@ -57,7 +60,8 @@ function LoginNet:DoAutoLogin()
 	self.autoLogin = false;
 end
 
-function LoginNet:startConnect()
+function LoginNet:startConnect(connectcallback)
+	self.connectcallback=connectcallback
 	if FishGI.serverConfig == nil or table.maxn(FishGI.serverConfig) == 0 then
 		print("服务器配置表为空");
 	else
@@ -77,6 +81,27 @@ function LoginNet:startConnect()
 		end
         print("server ip:"..serverInfo.url.." port:"..serverInfo.port);
 		self:Reconnect(serverInfo.url, serverInfo.port);
+	end
+end
+
+function LoginNet:OnConnectReply(bOK,errcode) 
+    if self.connectcallback then
+        self.connectcallback(self,bOK,errcode)
+        return
+	end
+	if not bOK then
+		return
+	end
+	print("self.loginType:"..self.loginType)
+	if self.loginType == FishCD.LOGIN_TYPE_BY_NAME then  
+		self:DispatchLoginByName(true,self.userName,self.password)
+	elseif self.loginType == FishCD.LOGIN_TYPE_BY_UNNAME then
+		printf(self.strLoginUserName)
+		self:DispatchLoginByUnName(IS_WEILE,self.strLoginUserName)
+	elseif self.loginType == FishCD.LOGIN_TYPE_ALLOC_USER then
+		print("OnCheckVersion:LOGIN_TYPE_ALLOC_USER")
+		strNickName = Helper.GetDeviceUserName()
+		self:DispatchAllocUser(strNickName,1,IS_WEILE,APP_ID,CHANNEL_ID)
 	end
 end
 
@@ -234,20 +259,7 @@ end
 --登录服务器检测版本应答 发送登录请求
 function evt.OnCheckVersion(obj,result)
 	print("login OnCheckVersion")
-	if not result then
-		return;
-	end
-	print("obj.loginType:"..obj.loginType)
-	if obj.loginType == FishCD.LOGIN_TYPE_BY_NAME then  
-		obj:DispatchLoginByName(true,obj.userName,obj.password);
-	elseif obj.loginType == FishCD.LOGIN_TYPE_BY_UNNAME then
-		printf(obj.strLoginUserName);
-		obj:DispatchLoginByUnName(IS_WEILE,obj.strLoginUserName);
-	elseif obj.loginType == FishCD.LOGIN_TYPE_ALLOC_USER then
-		print("OnCheckVersion:LOGIN_TYPE_ALLOC_USER")
-		strNickName = Helper.GetDeviceUserName();
-		obj:DispatchAllocUser(strNickName,1,IS_WEILE,APP_ID,CHANNEL_ID);
-	end
+	obj:OnConnectReply(result,-7) 
 end
 
 --[[
@@ -304,6 +316,7 @@ function evt.OnMsgAllocRoleReply( obj,result,session )
     if result and result>0 then
         --GameApp:dispatchEvent(gg.Event.SHOW_MESSAGE_DIALOG,"游客登录失败，请稍后重试!")
     else
+		obj.isFirstCreateUser = true;
         obj:AddRoleInfo(session);
         obj:LoginByUnname(session);
     end   

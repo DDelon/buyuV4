@@ -112,7 +112,7 @@ function HallLayer:onCreate( ... )
 
     self:openTouchEventListener()
 
-    FishGI.eventDispatcher:registerCustomListener("onUserInit", self, function(valTab) self:onUserInit(valTab) end)
+    FishGI.eventDispatcher:registerCustomListener("onUserInit", self, self.onUserInit(self))
 end
 
 --初始化背景

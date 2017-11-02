@@ -148,28 +148,16 @@ function LoginLayer:onClickStart( sender )
         return;
     end
     if FishGF.isThirdSdk() and FishGF.isThirdSdkLogin() then
-        local function loginResult(state, data)
-            log("loginResult")
-            log(state, data)
+        local function loginResult(data)
+            print("------------------------loginResult")
             FishGF.waitNetManager(false);
-            if state then
-                FishGF.showMessageLayer(FishCD.MODE_MIDDLE_OK_ONLY,"解析失败",nil)
-            else
-                local resultMsg = nil;
-                local ok, datatable = pcall(function() return loadstring(data)(); end)
-                if ok == false then
-                    resultMsg = json.decode(data)
-                else
-                    resultMsg = {}
-                    resultMsg.data = datatable
-                end
-                local resultData = resultMsg.data
+            if data.msg == "ok" then
                 local valTab = {};
-                valTab.session = resultData.code
-                valTab.userid = resultData.id
-                valTab.serverip = resultData.ip
-                valTab.serverport = resultData.port
-                FishGI.loginScene.net:loginByThird(valTab);
+                valTab.session = data.code
+                valTab.userid = data.id
+                valTab.serverip = data.ip
+                valTab.serverport = data.port
+                FishGI.loginScene.net:loginByThird(valTab)
             end
         end
         print("third log----------------------------")
@@ -198,26 +186,16 @@ function LoginLayer:onClickaccountstart( sender )
         return;
     end
     if FishGF.isThirdSdk() and FishGF.isThirdSdkLogin() then
-        local function loginResult(state, data)
+        local function loginResult(data)
+            print("------------------------loginResult")
             FishGF.waitNetManager(false)
-            if state then
-                FishGF.showMessageLayer(FishCD.MODE_MIDDLE_OK_ONLY,"解析失败",nil)
-            else
-                local resultMsg = nil;
-                local ok, datatable = pcall(function() return loadstring(data)(); end)
-                if ok == false then
-                    resultMsg = json.decode(data)
-                else
-                    resultMsg = {}
-                    resultMsg.data = datatable
-                end
-                local resultData = resultMsg.data
+            if data.msg == "ok" then
                 local valTab = {};
-                valTab.session = resultData.code
-                valTab.userid = resultData.id
-                valTab.serverip = resultData.ip
-                valTab.serverport = resultData.port
-                FishGI.loginScene.net:loginByThird(valTab);
+                valTab.session = data.code
+                valTab.userid = data.id
+                valTab.serverip = data.ip
+                valTab.serverport = data.port
+                FishGI.loginScene.net:loginByThird(valTab)
             end
         end
         FishGF.waitNetManager(true,nil,nil,0)
@@ -283,27 +261,16 @@ function LoginLayer:onClickqq( sender )
 
     if FishGF.isThirdSdk() and 
         FishGI.GameCenterSdkBase.ChannelInfoList[FishGI.GameCenterSdkBase.ChannelIdList[CHANNEL_ID]][FishGI.GameCenterSdkBase.ChannelInfoIndex.is_need_login] then
-        local function loginResult(state, data)
+        local function loginResult(data)
             print("------------------------loginResult")
             FishGF.waitNetManager(false);
-            if state then
-                FishGF.showMessageLayer(FishCD.MODE_MIDDLE_OK_ONLY,"解析错误！",nil)
-            else
-                local resultMsg = nil;
-                local ok, datatable = pcall(function() return loadstring(data)(); end)
-                if ok == false then
-                    resultMsg = json.decode(data)
-                else
-                    resultMsg = {}
-                    resultMsg.data = datatable
-                end
-                local resultData = resultMsg.data
+            if data.msg == "ok" then
                 local valTab = {};
-                valTab.session = resultData.code
-                valTab.userid = resultData.id
-                valTab.serverip = resultData.ip
-                valTab.serverport = resultData.port
-                FishGI.loginScene.net:loginByThird(valTab);
+                valTab.session = data.code
+                valTab.userid = data.id
+                valTab.serverip = data.ip
+                valTab.serverport = data.port
+                FishGI.loginScene.net:loginByThird(valTab)
             end
         end
         FishGI.GameCenterSdk:trySDKLogin({type = 1},loginResult)
@@ -318,27 +285,16 @@ function LoginLayer:onClickwechat( sender )
 
     if FishGF.isThirdSdk() and 
         FishGI.GameCenterSdkBase.ChannelInfoList[FishGI.GameCenterSdkBase.ChannelIdList[CHANNEL_ID]][FishGI.GameCenterSdkBase.ChannelInfoIndex.is_need_login] then
-        local function loginResult(state, data)
+        local function loginResult(data)
             print("------------------------loginResult")
             FishGF.waitNetManager(false);
-            if state then
-                FishGF.showMessageLayer(FishCD.MODE_MIDDLE_OK_ONLY,"解析错误！",nil)
-            else
-                local resultMsg = nil;
-                local ok, datatable = pcall(function() return loadstring(data)(); end)
-                if ok == false then
-                    resultMsg = json.decode(data)
-                else
-                    resultMsg = {}
-                    resultMsg.data = datatable
-                end
-                local resultData = resultMsg.data
+            if data.msg == "ok" then
                 local valTab = {};
-                valTab.session = resultData.code
-                valTab.userid = resultData.id
-                valTab.serverip = resultData.ip
-                valTab.serverport = resultData.port
-                FishGI.loginScene.net:loginByThird(valTab);
+                valTab.session = data.code
+                valTab.userid = data.id
+                valTab.serverip = data.ip
+                valTab.serverport = data.port
+                FishGI.loginScene.net:loginByThird(valTab)
             end
         end
         FishGI.GameCenterSdk:trySDKLogin({type = 2},loginResult)

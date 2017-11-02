@@ -116,6 +116,26 @@ function FishGF.ClassEx(clsname,fncreate)
     return cls;
 end
 
+function FishGF.StartWith(source, str,case_sensitive)
+    assert(source,"StartWith source is nil")
+    str= str or ""
+    local len = string.len(str)
+    if case_sensitive then --大小写敏感
+        return string.sub(source, 1, len) == str
+    else
+        return string.lower(string.sub(source, 1, len)) == string.lower(str)
+    end
+end
+
+--相当于C++中的?:运算符
+function FishGF.iif(condition, v1, v2)
+    if condition then
+        return v1;
+    else
+        return v2;
+    end
+end
+
 function FishGF.setLodingEnd()
     FishGI.loading_sp = 2
     FishGI.isloadingEnd = true
@@ -445,8 +465,8 @@ function FishGF.delSwallowLayer(waitId)
         if FishGI.waitNetlist.noIdCount > 0 then
             FishGI.waitNetlist.noIdCount = FishGI.waitNetlist.noIdCount - 1
             isExist = true
-            waitId = ""
         end
+        waitId = ""
     end
     
     if not isExist then
@@ -1135,7 +1155,7 @@ function FishGF.copy(content)
 end
 
 function FishGF.isThirdSdk()
-	if CHANNEL_ID ~= CHANNEL_ID_LIST.tencent and CHANNEL_ID ~= CHANNEL_ID_LIST.weile and CHANNEL_ID ~= CHANNEL_ID_LIST.ios then
+	if CHANNEL_ID ~= CHANNEL_ID_LIST.tencent and CHANNEL_ID ~= CHANNEL_ID_LIST.weile and CHANNEL_ID ~= CHANNEL_ID_LIST.ios and CHANNEL_ID ~= CHANNEL_ID_LIST.gdt and CHANNEL_ID ~= CHANNEL_ID_LIST.jrtt then
 		return true;
 	end
 	return false;
@@ -1608,4 +1628,24 @@ function FishGF.dgtSDKReg(content)
         local ok,ret = luaBridge.callStaticMethod(javaClassName, javaMethodName, javaParams, javaMethodSig);
         
     end
+end
+
+function FishGF.getTimeByString(timeStr)
+    if string.len(timeStr) < 19 then
+        return 0;
+    end
+    local year = string.sub(timeStr, 1, 4)  
+    local month = string.sub(timeStr, 6, 7)  
+    local day = string.sub(timeStr, 9, 10)  
+    local hour = string.sub(timeStr, 12, 13)
+    local minute = string.sub(timeStr, 15, 16)
+    local second = string.sub(timeStr, 18, 19)
+    return os.time({year=year, month=month, day=day, hour=hour,min=minute,sec=second})
+end
+
+function FishGF.decode(str)
+
+end
+
+function FishGF.encode()
 end

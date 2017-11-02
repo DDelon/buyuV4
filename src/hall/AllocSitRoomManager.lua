@@ -21,7 +21,7 @@ function AllocSitRoomManager.create(hallManager, roomid)
 end
 
 function AllocSitRoomManager:RegisterMsgProcess(msg, func, name)
-    print("BaseClient RegisterMsgProcess");
+    print("AllocSitRoomManager RegisterMsgProcess");
     evt[msg] = function(client, ...)
 --        print("[API] Enter MSG = " .. tostring(msg) .. ", " .. tostring(name));
         return func(self, ...);

@@ -4,7 +4,8 @@ local evt = {}
 local HallNet = FishGF.ClassEx("HallNet", function() 
     local  obj = CHallManager.New();
     obj.event= evt;
-    return obj ;
+    obj.http=require("common.HttpProxyHelper").new():RegisterHttpProxyEvent(obj, true)
+    return obj;
 end );
 
 function HallNet.create()
@@ -258,6 +259,25 @@ function evt.OnJoinHall( hall,lastroomid )
     local userData = hall.userinfo;
     hall.userName = userData.nick;
     hall.id = userData.id;
+	
+	if CHANNEL_ID == CHANNEL_ID_LIST.gdt then
+        if FishGI.loginScene.net.isFirstCreateUser then
+            local data = {}
+            data.accountID = userData.id
+            local str = json.encode(data);
+            FishGF.dgtSDKReg(str);
+            local data = {}
+            data.accountID = userData.id
+            local str = json.encode(data);
+            FishGF.dgtSDKAct(str);
+        else
+            local data = {}
+            data.accountID = userData.id
+            local str = json.encode(data);
+            FishGF.dgtSDKAct(str);
+        end
+    end
+	
     if not IS_LOCAL_TEST then
         FishGI.WebUserData:initWithUserId(userData.id);
 
@@ -358,6 +378,7 @@ function evt.OnMsgJoinRoom(hall,result,lockedroomid)
         print("-----------------------------token:"..hall:getSession());
     elseif result == 1 then
         --玩家在房间
+        print("last room id:"..lockedroomid)
         local room = hall.rooms[lockedroomid];
         if room == nil then
             print("进入房间失败，同一时刻只能进入一个房间!");

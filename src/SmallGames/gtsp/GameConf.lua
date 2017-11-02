@@ -189,9 +189,9 @@ function GameConf:getPayData()
         gcsdk = {
             android = {
                 className = "com.weile.gcsdk.GameCenterBase",
-                methodName = "oPayForProduct",
+                methodName = "doPayForProduct",
                 methodSig = "(Ljava/lang/String;I)I",
-                callbackResult = "",
+                callbackResult = nil,
             },
             ios = {
                 className = "AppController",
@@ -242,7 +242,7 @@ function GameConf:makeOrderResultData( data, orderData )
         table.merge(payInfo, data.ext)
         return payInfo
     end
-    return
+    return payInfo
 end
 
 function GameConf:makeAndroidPayParams( payInfo, extendData )
@@ -270,7 +270,7 @@ function GameConf:makeAndroidPayParams( payInfo, extendData )
             yyb = GameConf.onThirdpayYyb,
         }
         if onThirdpaySdkFun[self.pay_type] then
-            payInfo = onThirdpaySdkFun[self.pay_type](self, payInfo)
+            payInfo = onThirdpaySdkFun[self.pay_type](self, payInfo, extendData)
             local jsonStr = json.encode(payInfo, extendData)
             javaParams = {
                 jsonStr,
@@ -297,24 +297,28 @@ function GameConf:makeIosPayParams( payInfo, extendData )
 end
 
 function GameConf:makeAndroidPayResultData( data )
-    local ok = false
-	local resultInfo = nil
-	if type(data) == "string" then
-		ok,resultInfo = pcall(function()
-			return loadstring(data)()
-		end)
-	else
-		ok = true
-		resultInfo = data
-	end
+    local resultInfo = nil
+    local statusCode = 0
+    if not self.is_thirdpay_sdk then
+        if type(data) == "string" then
+            local ok = false
+            ok,resultInfo = pcall(function()
+                return loadstring(data)()
+            end)
+        else
+            resultInfo = data
+        end
+        statusCode = resultInfo.status
+    else
+        resultInfo = json.decode(data)
+        statusCode = resultInfo.resultCode
+    end
 
-    local resultStatus = GameConf.PAY_RESULT_STATUS.FAILED
-	if ok then
-		if resultInfo.status == 0 then
-			resultStatus = GameConf.PAY_RESULT_STATUS.SUCCESS
-		end
-	end
-    return resultStatus
+    if statusCode == 0 then
+        return GameConf.PAY_RESULT_STATUS.SUCCESS
+    else
+        return GameConf.PAY_RESULT_STATUS.FAILED
+    end
 end
 
 function GameConf:makeIosPayResultData( status, paytype, msg )
@@ -439,7 +443,7 @@ end
 -------------------------------自定义接口----------------------------------------
 --------------------------------------------------------------------------------
 
-local function getThirdpayCallBackUrl(url)
+function GameConf:getThirdpayCallBackUrl(url)
     return string.format(url, GameConf.PAY_CONFIG[self.pay_type].typeName)
 end
 
@@ -473,7 +477,7 @@ function GameConf:onThirdpayHuawei(payArgs, extendData)
 	local payInfo = {}
     payInfo.orderid = payArgs.orderid
     payInfo.money = payArgs.money
-    payInfo.callbackurl = getThirdpayCallBackUrl(extendData.thirdpayCallbackUrl)
+    payInfo.callbackurl = self:getThirdpayCallBackUrl(extendData.thirdpayCallbackUrl)
     payInfo.productname = payArgs.subject
     payInfo.productid   = payArgs.goods
     payInfo.username    = SmallGamesGI.hallNet.userinfo.nick
@@ -486,7 +490,7 @@ function GameConf:onThirdpayJinli(payArgs, extendData)
     payInfo.orderid     = payArgs.orderid
     --payInfo.money       = payTab.money/100
     payInfo.money       = tonumber(payArgs.money)/100
-    payInfo.callbackurl = getThirdpayCallBackUrl(extendData.thirdpayCallbackUrl)
+    payInfo.callbackurl = self:getThirdpayCallBackUrl(extendData.thirdpayCallbackUrl)
     payInfo.productname = payArgs.subject
     payInfo.productid   = payArgs.goods
     payInfo.username    = SmallGamesGI.hallNet.userinfo.nick
@@ -525,7 +529,7 @@ function GameConf:onThirdpayMi(payArgs, extendData)
     payInfo.amount = payArgs.money;
     payInfo.productName = payArgs.subject
     payInfo.productDesc = payArgs.body
-    payInfo.callbackurl = getThirdpayCallBackUrl(extendData.thirdpayCallbackUrl)
+    payInfo.callbackurl = self:getThirdpayCallBackUrl(extendData.thirdpayCallbackUrl)
 	return payInfo
 end
 
@@ -535,7 +539,7 @@ function GameConf:onThirdpayOppo(payArgs, extendData)
     payInfo.amount = payArgs.money
     payInfo.productName = payArgs.subject
     payInfo.productDesc = payArgs.body
-    payInfo.callbackurl = getThirdpayCallBackUrl(extendData.thirdpayCallbackUrl)
+    payInfo.callbackurl = self:getThirdpayCallBackUrl(extendData.thirdpayCallbackUrl)
 	return payInfo
 end
 
@@ -543,7 +547,7 @@ function GameConf:onThirdpayQihu(payArgs, extendData)
 	local payInfo = {}
     payInfo.orderid = payArgs.orderid
     payInfo.money = payArgs.money
-    payInfo.callbackurl = getThirdpayCallBackUrl(extendData.thirdpayCallbackUrl)
+    payInfo.callbackurl = self:getThirdpayCallBackUrl(extendData.thirdpayCallbackUrl)
     payInfo.productname = payArgs.subject
     payInfo.productid   = payArgs.goods
 	payInfo.username    = SmallGamesGI.hallNet.userinfo.nick
@@ -568,7 +572,7 @@ function GameConf:onThirdpayYyb(payArgs, extendData)
     payInfo.name = payArgs.subject
     payInfo.productDesc = payArgs.body
     payInfo.goods = payArgs.goods
-    payInfo.callbackurl = getThirdpayCallBackUrl(extendData.thirdpayCallbackUrl)
+    payInfo.callbackurl = self:getThirdpayCallBackUrl(extendData.thirdpayCallbackUrl)
 	return payInfo
 end
 

@@ -11,42 +11,11 @@ function(err,data);
 -- local DAPI_DOMAIN = URL_HEADER..WEB_DOMAIN;
 -- local API_DOMAIN = "http://api.test."..WEB_DOMAIN;
 
--- 返回状态码
-cc.exports.ApiStatus=
-{
-    Ok = 0,
-    ShowMsg = 100,
-    Success = 200,
-    WXAuthFailed=351
-}
-
-local StateMsg = {
-    [0] = "成功",
-    [100] = "错误提示, 当状态为此值时请将错误信息显示给用户",
-    [101] = "请求接口时必须使用https协议访问",
-    [111] = "接口版本参数错误",
-    [112] = "接口语言参数错误",
-    [113] = "接口品牌参数错误",
-    [119] = "缺少参数,具体缺少哪个参数请在msg中查看",
-    [120] = "参数错误,具体哪个参数错误请在msg中查看",
-    [121] = "请求的app_id参数错误",
-    [122] = "请求的channel_id参数错误",
-    [123] = "应用配置不存在",
-    [124] = "用户API请求中的data参解密错误",
-    [131] = "用户API请求中的token参数为空",
-    [132] = "用户API请求中的token无效",
-    [301] = "短信验证码发送太快(即:两次的间隔时间太短)",
-    [302] = "单位时间内发送的短信验证码数量超限",
-    [303] = "手机号码处于黑名单中,无法获取短信验证码",
-    [351] = "微信授权过期",
-    [500] = "服务器内部错误"
-}
-
 local dapi_ = "://dapi." .. WEB_DOMAIN
 local userapi_ = "://userapi"..PREFIX_DOMAIN.."." .. WEB_DOMAIN
 local payapi_ = "://payapi"..PREFIX_DOMAIN.."." .. WEB_DOMAIN
 local payback_ = "://payback"..PREFIX_DOMAIN.."." .. WEB_DOMAIN
-local thirdapi_ = "://third."..WEB_DOMAIN
+local thirdapi_ = "://thirdlogin."..WEB_DOMAIN
 
 -- local api_ver_="/v1"
 -- local language_="/cn"
@@ -55,6 +24,32 @@ local thirdapi_ = "://third."..WEB_DOMAIN
 --实现接口 url
 local Dapi = {}
 local Http = FishGI.Http
+
+local METHOD_GET="GET"
+local METHOD_POST="POST"
+local METHOD_UPLOAD="UPLOAD"
+
+local function sendRequest_(method,url,callback,...)
+    local function invoke_(manager,method,url,callback,...)
+        assert(manager,"manager is nil error")
+        local HttpFunc={
+            [METHOD_GET]= checktable(manager.http).Get,
+            [METHOD_POST]=checktable(manager.http).Post,
+            [METHOD_UPLOAD]=checktable(manager.http).UploadFile,
+        }
+        if HttpFunc[method] then
+          return  HttpFunc[method](manager.http,url,callback,...)
+        else
+            callback(-2,"无效请求调用")
+            printf("无效的代理服务器请求 METHOD: %s, url:%s",method,url)
+        end
+    end
+    if FishGI.hallScene and FishGI.hallScene.net then
+        return invoke_(FishGI.hallScene.net,method,url,callback,...)
+    else
+        return invoke_(FishGI.loginScene.net,method,url,callback,...)
+    end
+end
 
 local function getPayApi_(name, channelId)
     if channelId == nil then
@@ -90,8 +85,10 @@ local function getThirdApi_(name, channelId)
 end
 
 local function getToken_()
-    if FishGI.hallScene then
+    if FishGI.hallScene and FishGI.hallScene.net then
         return { token = FishGI.hallScene.net:getSession() }
+    elseif FishGI.loginScene and FishGI.loginScene.net then
+        return { token = FishGI.loginScene.net:getSession() }
     else
         return { token = "0123456789abcdef0123456789abcdef" }
     end
@@ -109,29 +106,26 @@ local function checkvalues_(...)
 end
 
 local function errorhandler_(callback)
-    return function(state, data)
-        if state then
-            local ms = StateMsg[tonumber(state)] or data
-            callback({ msg = ms or "解析错误！" , status = tostring(state) })
+    return function(respcode, data)
+        if respcode and respcode~=200 then
+            respcode =  FishGF.iif(checkint(respcode)==0,-1,respcode)
+            if callback then
+                callback({ msg = FishCD.API_ERR_MSG[respcode] or "网络错误,请重试！" , status = respcode })
+            end
         else
             printf("errorhandler_ %s", tostring(data))
             local ok, datatable = pcall(function() return loadstring(data)(); end)
-			if ok == false and data ~= nil then
-				datatable = json.decode(data);
-			end
             datatable = checktable(datatable)
-            if ok and datatable.status == ApiStatus.ShowMsg then
-                --GameApp:dispatchEvent(gg.Event.SHOW_MESSAGE_DIALOG, datatable.msg)
+            if ok and datatable.status == FishCD.API_ERR_CODE.ShowMsg then
+            elseif datatable.status == FishCD.API_ERR_CODE.ShowToast then
             end
-            callback(datatable)
+            if callback then
+                callback(datatable)
+            else
+                printf("no  callback")
+            end
         end
     end
-end
-
-
--- 获取错误代码提示
-function Dapi:GetErrorMsg(err_code)
-    return StateMsg[err_code]
 end
 
 -- 接口名称
@@ -399,7 +393,7 @@ function Dapi:LoginByWechat(wxappid,wxcode,wxopenid,callback)
     wxappid=wxappid or WX_APP_ID_LOGIN    
     local deviceid = Helper.GetDeviceCode();
     local data ={wechat_id=wxappid,code=wxcode,openid=wxopenid,udid=deviceid} 
-    Http:Post(url, errorhandler_(callback), data,true)
+    sendRequest_(METHOD_POST,url, errorhandler_(callback), data, true)
 end
 
 
@@ -595,7 +589,7 @@ end
 ]]
 function Dapi:PullGameInfo(gameIDList, callback)
     -- 拼接地址
-    local url = "https://client." .. WEB_DOMAIN .. "/gameinfos/" .. gg.IIF(IS_WEILE, 2, 1) .. "/" .. APP_ID .. "/" .. CHANNEL_ID .. "/"
+    local url = "https://client." .. WEB_DOMAIN .. "/gameinfos/" .. FishGF.iif(IS_WEILE, 2, 1) .. "/" .. APP_ID .. "/" .. CHANNEL_ID .. "/"
     if type(gameIDList) == "table" then
         for k, v in pairs(gameIDList) do
             if k ~= 1 then
@@ -746,12 +740,11 @@ function Dapi:thirdLogin(channel, data, callback)
     data.type = channel
     data.udid = Helper.GetDeviceCode()
     local url = getThirdApi_("/login");
-    dump(data)
-	Http:Post(url, callback, data, true)
+    sendRequest_(METHOD_POST,url, errorhandler_(callback), data, true)
 end
 
 function Dapi:getLoginNotice(url, data, callback, isEncrypt)
-    Http:Post("userapi-fish.weile.com/loginNotice/list", errorhandler_(callback), data, isEncrypt);
+    Http:Post("userapi-fish.weile.com/loginNotice/list", errorhandler_(callback), data, isEncrypt)
 end
 
 return Dapi;

@@ -145,6 +145,10 @@ function PayBase:doPaySDK(payInfo)
             elseif FishGI.GAME_STATE == 3 then
 				FishGI.WebUserData:initWithUserId(FishGI.WebUserData:GetUserId())
                 FishGI.gameScene.net:sendReChargeSucceed()
+				local uiShopLayer = FishGF.getLayerByName("uiShopLayer")
+				if uiShopLayer ~= nil then
+					uiShopLayer:hideLayer(false);
+				end
             end
         else
             FishGF.print("------recharge faile----")
@@ -203,6 +207,10 @@ function PayBase:onCallback_(luastr)
 				--FishGF.showMessageLayer(FishCD.MODE_MIDDLE_OK_ONLY,FishGF.getChByIndex(800000351)..self.info.name.."\n"..str,nil, nil, nil, 3)
 			elseif FishGI.GAME_STATE == 3 then
 				FishGI.gameScene.net:sendReChargeSucceed()
+				local uiShopLayer = FishGF.getLayerByName("uiShopLayer")
+				if uiShopLayer ~= nil then
+					uiShopLayer:hideLayer(false);
+				end
 				FishGI.WebUserData:initWithUserId(FishGI.WebUserData:GetUserId());
 				if self.info.rechargeType ~= 3 then
 					local str = ""
