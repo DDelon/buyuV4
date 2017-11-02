@@ -24,7 +24,7 @@ if DEBUG > 0 then
         breakInfoFun, xpcallFun = require("Other/LuaDebug")("localhost", 7003)
         --断点定时器添加，用于LuaDebug
         cc.Director:getInstance():getScheduler():scheduleScriptFunc(breakInfoFun, 0.3, false)
-    end
+    end  
 end
 
 -- for CCLuaEngine traceback
