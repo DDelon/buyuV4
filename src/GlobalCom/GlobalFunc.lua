@@ -1169,6 +1169,14 @@ function FishGF.isThirdSdkExit()
 	return FishGI.GameCenterSdkBase.ChannelInfoList[FishGI.GameCenterSdkBase.ChannelIdList[CHANNEL_ID]][FishGI.GameCenterSdkBase.ChannelInfoIndex.is_need_exit]
 end
 
+function FishGF.getThirdLoginTypeName()
+	return FishGI.GameCenterSdkBase.ChannelInfoList[FishGI.GameCenterSdkBase.ChannelIdList[CHANNEL_ID]][FishGI.GameCenterSdkBase.ChannelInfoIndex.login_type_name]
+end
+
+function FishGF.getThirdPayTypeName()
+	return FishGI.GameCenterSdkBase.ChannelInfoList[FishGI.GameCenterSdkBase.ChannelIdList[CHANNEL_ID]][FishGI.GameCenterSdkBase.ChannelInfoIndex.pay_order_req_type]
+end
+
 --玩家离开提示
 function FishGF.playerLeaveNotive(str)
     local function callback(sender)
@@ -1524,16 +1532,17 @@ function FishGF.enterGameCommon( gameName )
     FishGI.isExitRoom = true
     FishGI.exitType = 1000
     FishGI.hallScene.net:dealloc()
-    local function updateLobbyData(appId, appKey, gameId)
+    local function updateLobbyData(appId, appKey, gameId, urlKey)
         APP_ID = appId
         APP_KEY = appKey
         GAME_ID = gameId
-        URLKEY = APP_ID .. APP_KEY .. APP_ID
+        URLKEY = urlKey
     end
     local lobbyData = {
         game_conf = "SmallGames."..gameName..".GameConf",
         app_id = APP_ID,
         app_key = APP_KEY,
+        url_key = URLKEY,
         game_id = GAME_ID,
         channel_id = CHANNEL_ID,
         system_status = FishGI.SYSTEM_STATE,

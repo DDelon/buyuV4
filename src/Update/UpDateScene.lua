@@ -287,16 +287,7 @@ function UpDateScene:runNextScene()
 
 		if FishGF.isThirdSdk() and FishGF.isThirdSdkLogin() then
 			local function loginResult(data)
-				print("------------------------loginResult")
-				FishGF.waitNetManager(false);
-				if data.msg == "ok" then
-					local valTab = {};
-					valTab.session = data.code
-					valTab.userid = data.id
-					valTab.serverip = data.ip
-					valTab.serverport = data.port
-					FishGI.loginScene.net:loginByThird(valTab)
-				end
+				FishGI.loginScene.net:loginByThird(data)
 			end
 			FishGI.GameCenterSdk:trySDKLogin({type = 1},loginResult)
 		end

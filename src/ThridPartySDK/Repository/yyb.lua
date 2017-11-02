@@ -17,13 +17,10 @@ luaj.callStaticMethod(className, "doBilling", args)
 
 function YYBSDKInterface:trySDKLogin(info, loginCB)
     local function callBackDoLogin( strJson )
-        local resultTab = json.decode(strJson, 1);
-        local status = resultTab.state;
-        local resultMsg = json.decode(resultTab.resultMsg, 1);
-        FishGF.waitNetManager(true);
-        print("doLogin callback:"..strJson);
-        FishGI.Dapi:thirdLogin("ysdk", resultMsg, loginCB);
-        --self:doGetTokenAndSsoid(callBackGetTokenAndSsoidResult)
+        local resultTab = json.decode(strJson, 1)
+        local status = resultTab.state
+        local resultMsg = json.decode(resultTab.resultMsg, 1)
+        loginCB(resultMsg)
     end
     self:doLogin(info, callBackDoLogin)
     return true

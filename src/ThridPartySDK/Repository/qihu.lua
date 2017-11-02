@@ -25,10 +25,9 @@ function QihuSDKInterface:trySDKLogin(info, loginCB)
             return
         end
 
-        FishGF.waitNetManager(true)
         local resultMsg = json.decode(msgTab.resultMsg)
 
-        FishGI.Dapi:thirdLogin("login360", resultMsg, loginCB)
+        loginCB(resultMsg)
     end
 
     self:doLogin(info, loginCallback)

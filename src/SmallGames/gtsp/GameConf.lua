@@ -1,5 +1,41 @@
 local GameConf = class("GtspGameConf", nil)
 
+GameConf.LOGIN_CONFIG = {
+    baidu = {
+        typeName = "baidu",
+    },
+    huawei = {
+        typeName = "huawei",
+    },
+    jinli = {
+        typeName = "jinli",
+    },
+    lenovo = {
+        typeName = "lenovo",
+    },
+    mi = {
+        typeName = "xiaomi",
+    },
+    mz = {
+        typeName = "mz",
+    },
+    oppo = {
+        typeName = "oppo",
+    },
+    qihu = {
+        typeName = "login360",
+    },
+    samsung = {
+        typeName = "samsung",
+    },
+    vivo = {
+        typeName = "vivo",
+    },
+    yyb = {
+        typeName = "ysdk",
+    },
+}
+
 GameConf.PRODUCT_CONFIG = {
     {
         id="830000001",
@@ -103,11 +139,17 @@ GameConf.PAY_CONFIG = {
     mi = {
         typeName = "mi",
     },
+    mz = {
+        typeName = "mz",
+    },
     oppo = {
         typeName = "oppo",
     },
     qihu = {
         typeName = "360",
+    },
+    samsung = {
+        typeName = "samsung",
     },
     vivo = {
         typeName = "vivo",
@@ -210,6 +252,20 @@ function GameConf:getPayData()
     }
 end
 
+function GameConf:getLoginTypeName(loginType)
+    if loginType == nil then
+        loginType = self.login_type
+    end
+    return GameConf.LOGIN_CONFIG[loginType].typeName
+end
+
+function GameConf:getPayTypeName(payType)
+    if payType == nil then
+        payType = self.pay_type
+    end
+    return GameConf.PAY_CONFIG[payType].typeName
+end
+
 function GameConf:makeOrderData( payData )
     local payConfig = GameConf.PAY_CONFIG[self.pay_type]
     local orderData = {}
@@ -264,8 +320,10 @@ function GameConf:makeAndroidPayParams( payInfo, extendData )
             jinli = GameConf.onThirdpayJinli,
             lenovo = GameConf.onThirdpayLenovo,
             mi = GameConf.onThirdpayMi,
+            mz = GameConf.onThirdpayMz,
             oppo = GameConf.onThirdpayOppo,
             qihu = GameConf.onThirdpayQihu,
+            samsung = GameConf.onThirdpaySamsung,
             vivo = GameConf.onThirdpayVivo,
             yyb = GameConf.onThirdpayYyb,
         }
@@ -533,6 +591,9 @@ function GameConf:onThirdpayMi(payArgs, extendData)
 	return payInfo
 end
 
+function GameConf:onThirdpayMz(payArgs, extendData)
+end
+
 function GameConf:onThirdpayOppo(payArgs, extendData)
 	local payInfo = {}
     payInfo.order = payArgs.orderid
@@ -552,6 +613,32 @@ function GameConf:onThirdpayQihu(payArgs, extendData)
     payInfo.productid   = payArgs.goods
 	payInfo.username    = SmallGamesGI.hallNet.userinfo.nick
     payInfo.userid      = SmallGamesGI.hallNet.userinfo.id
+	return payInfo
+end
+
+function GameConf:onThirdpaySamsung(payArgs, extendData)
+    local tWaresidList = {}
+    tWaresidList["830000001"] = 1
+    tWaresidList["830000002"] = 2
+    tWaresidList["830000003"] = 3
+    tWaresidList["830000004"] = 4
+    tWaresidList["830000005"] = 5
+    tWaresidList["830000006"] = 6
+    tWaresidList["830000007"] = 7
+    tWaresidList["830000008"] = 8
+    tWaresidList["830000009"] = 9
+    tWaresidList["830000010"] = 10
+    tWaresidList["830000011"] = 11
+    tWaresidList["830000012"] = 12
+    tWaresidList["830000013"] = 13
+    tWaresidList["830000014"] = 14
+    tWaresidList["830000015"] = 15
+    local payInfo = {}
+    payInfo.userid  = SmallGamesGI.hallNet.userinfo.id
+    payInfo.order   = payArgs.orderid
+    payInfo.waresid = tWaresidList[tostring(payArgs.goods)]
+    payInfo.price   = payArgs.money
+    payInfo.callbackurl = self:getThirdpayCallBackUrl(extendData.thirdpayCallbackUrl)
 	return payInfo
 end
 
