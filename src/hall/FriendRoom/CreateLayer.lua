@@ -142,7 +142,14 @@ function CreateLayer:setBtnChoose(viewTag, btnTag)
         elseif btnTag == 2 then 
             self:setBtnState(self.btn_time_2,true)
         end
-
+    elseif viewTag == "isHelpOpen" then 
+        -- self:setBtnState(self.btn_time_1,false)
+        -- self:setBtnState(self.btn_time_2,false)
+        -- if btnTag == 1 then
+        --     self:setBtnState(self.btn_time_1,true)
+        -- elseif btnTag == 2 then 
+        --     self:setBtnState(self.btn_time_2,true)
+        -- end
     end
 
 end
