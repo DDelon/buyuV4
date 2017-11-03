@@ -21,8 +21,7 @@ function MiSDKInterface:trySDKLogin(info, loginCB)
         local status = resultTab.state;
         local resultMsg = json.decode(resultTab.resultMsg, 1);
         FishGF.waitNetManager(true);
-        FishGI.Dapi:thirdLogin("xiaomi", resultMsg, loginCB);
-        --self:doGetTokenAndSsoid(callBackGetTokenAndSsoidResult)
+        loginCB(resultMsg)
     end
     print("---------------------");
     self:doLogin(info, callBackDoLogin)

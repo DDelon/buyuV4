@@ -44,11 +44,7 @@ local function sendRequest_(method,url,callback,...)
             printf("无效的代理服务器请求 METHOD: %s, url:%s",method,url)
         end
     end
-    if FishGI.hallScene and FishGI.hallScene.net then
-        return invoke_(FishGI.hallScene.net,method,url,callback,...)
-    else
-        return invoke_(FishGI.loginScene.net,method,url,callback,...)
-    end
+    return invoke_(FishGI.loginScene.net,method,url,callback,...)
 end
 
 local function getPayApi_(name, channelId)

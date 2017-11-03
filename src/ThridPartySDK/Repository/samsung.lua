@@ -20,8 +20,7 @@ function SamSungSdkInterface:trySDKLogin(info, loginCB)
         print("--------callBackDoLogin", strJson)
         local resultTab = LIB_CJSON.decode(strJson)
         local resultMsg = LIB_CJSON.decode(resultTab.resultMsg)
-		FishGF.waitNetManager(true)
-        FishGI.Dapi:thirdLogin("samsung", resultMsg, loginCB)
+		loginCB(resultMsg)
     end
 
     self:doLogin(info, callBackDoLogin)

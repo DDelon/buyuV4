@@ -833,7 +833,7 @@ function HallManager:addHallNotice()
             local endTime = FishGF.getTimeByString(val["end_time"])
             local curTime = os.time();
 
-            if endTime > curTime then
+            if endTime and endTime > curTime then
                 version = val["title"]
                 updateMsg = val["body"]
             end

@@ -47,6 +47,9 @@ function LoginNet:DoAutoLogin()
 	print("-------------DoAutoLogin-------------")
 	self.isFirstCreateUser = false;
 	self.autoLogin = true;
+	if FishGF.isThirdSdk() and FishGF.isThirdSdkLogin() then
+		self.loginType = FishCD.LOGIN_TYPE_BY_THIRD_LOGIN
+	end
 	if self.loginType == FishCD.LOGIN_TYPE_BY_NAME then
 		--账号密码登录
 		self:startConnect();
@@ -203,9 +206,26 @@ end
 
 --第三方登陆接口
 function LoginNet:loginByThird(info)
-	self.loginType = FishCD.LOGIN_TYPE_BY_THIRD_LOGIN;
+	self.loginType = FishCD.LOGIN_TYPE_BY_THIRD_LOGIN
 	self.thirdLoginInfo = info
-	FishGI.mainManagerInstance:createHallManager(info);
+	local function loginResult(data)
+		print("LoginNet:loginByThird loginResult")
+		FishGF.waitNetManager(false)
+		if data.msg == "ok" then
+			local valTab = {}
+			valTab.session = data.code
+			valTab.userid = data.id
+			valTab.serverip = data.ip
+			valTab.serverport = data.port
+			FishGI.mainManagerInstance:createHallManager(valTab)
+		end
+	end
+	FishGF.waitNetManager(true)
+	FishGI.Dapi:thirdLogin(FishGF.getThirdLoginTypeName(), self.thirdLoginInfo, loginResult)
+end
+
+function LoginNet:getSession()
+    return self.session;
 end
 
 -----------------------------------------------evt事件表-------------------------

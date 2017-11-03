@@ -21,8 +21,7 @@ function LenovoSDKInterface:trySDKLogin(info, loginCB)
         local resultTab = LIB_CJSON.decode(strJson)
         local resultMsg = {}
         resultMsg.token = resultTab.resultMsg
-		FishGF.waitNetManager(true)
-        FishGI.Dapi:thirdLogin("lenovo", resultMsg, loginCB)
+		loginCB(resultMsg)
     end
     self:doLogin(info, callBackDoLogin)
     return true

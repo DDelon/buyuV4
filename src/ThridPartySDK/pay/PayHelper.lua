@@ -24,7 +24,7 @@ function PayHelper:doPay(payInfo)
 			self:createWeileView(payInfo);
 		end
 	else
-		payInfo["type"] = FishGI.GameCenterSdkBase.ChannelInfoList[FishGI.GameCenterSdkBase.ChannelIdList[CHANNEL_ID]][FishGI.GameCenterSdkBase.ChannelInfoIndex.pay_order_req_type];
+		payInfo["type"] = FishGF.getThirdPayTypeName()
 		self:createPay("sdk"):doPay(payInfo);
 	end
 end

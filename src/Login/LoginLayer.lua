@@ -149,16 +149,7 @@ function LoginLayer:onClickStart( sender )
     end
     if FishGF.isThirdSdk() and FishGF.isThirdSdkLogin() then
         local function loginResult(data)
-            print("------------------------loginResult")
-            FishGF.waitNetManager(false);
-            if data.msg == "ok" then
-                local valTab = {};
-                valTab.session = data.code
-                valTab.userid = data.id
-                valTab.serverip = data.ip
-                valTab.serverport = data.port
-                FishGI.loginScene.net:loginByThird(valTab)
-            end
+            FishGI.loginScene.net:loginByThird(data)
         end
         print("third log----------------------------")
         FishGF.waitNetManager(true,nil,nil,0)
@@ -187,16 +178,7 @@ function LoginLayer:onClickaccountstart( sender )
     end
     if FishGF.isThirdSdk() and FishGF.isThirdSdkLogin() then
         local function loginResult(data)
-            print("------------------------loginResult")
-            FishGF.waitNetManager(false)
-            if data.msg == "ok" then
-                local valTab = {};
-                valTab.session = data.code
-                valTab.userid = data.id
-                valTab.serverip = data.ip
-                valTab.serverport = data.port
-                FishGI.loginScene.net:loginByThird(valTab)
-            end
+            FishGI.loginScene.net:loginByThird(data)
         end
         FishGF.waitNetManager(true,nil,nil,0)
         FishGI.GameCenterSdk:trySDKLogin({type = 2},loginResult)
@@ -262,16 +244,7 @@ function LoginLayer:onClickqq( sender )
     if FishGF.isThirdSdk() and 
         FishGI.GameCenterSdkBase.ChannelInfoList[FishGI.GameCenterSdkBase.ChannelIdList[CHANNEL_ID]][FishGI.GameCenterSdkBase.ChannelInfoIndex.is_need_login] then
         local function loginResult(data)
-            print("------------------------loginResult")
-            FishGF.waitNetManager(false);
-            if data.msg == "ok" then
-                local valTab = {};
-                valTab.session = data.code
-                valTab.userid = data.id
-                valTab.serverip = data.ip
-                valTab.serverport = data.port
-                FishGI.loginScene.net:loginByThird(valTab)
-            end
+            FishGI.loginScene.net:loginByThird(data)
         end
         FishGI.GameCenterSdk:trySDKLogin({type = 1},loginResult)
     end
@@ -286,16 +259,7 @@ function LoginLayer:onClickwechat( sender )
     if FishGF.isThirdSdk() and 
         FishGI.GameCenterSdkBase.ChannelInfoList[FishGI.GameCenterSdkBase.ChannelIdList[CHANNEL_ID]][FishGI.GameCenterSdkBase.ChannelInfoIndex.is_need_login] then
         local function loginResult(data)
-            print("------------------------loginResult")
-            FishGF.waitNetManager(false);
-            if data.msg == "ok" then
-                local valTab = {};
-                valTab.session = data.code
-                valTab.userid = data.id
-                valTab.serverip = data.ip
-                valTab.serverport = data.port
-                FishGI.loginScene.net:loginByThird(valTab)
-            end
+            FishGI.loginScene.net:loginByThird(data)
         end
         FishGI.GameCenterSdk:trySDKLogin({type = 2},loginResult)
     end

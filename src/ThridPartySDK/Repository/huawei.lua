@@ -25,10 +25,9 @@ function HuaWeiSDKInterface:trySDKLogin(info, loginCB)
             return
         end
 
-        FishGF.waitNetManager(true)
         local resultMsg = json.decode(msgTab.resultMsg)
 
-        FishGI.Dapi:thirdLogin("huawei", resultMsg, loginCB)
+        loginCB(resultMsg)
     end
 
     self:doLogin(info, loginCallback)

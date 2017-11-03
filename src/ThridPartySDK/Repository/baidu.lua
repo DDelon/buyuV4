@@ -20,11 +20,7 @@ function BaiduSDKInterface:trySDKLogin(info, loginCB)
         print("--------callBackGetTokenAndSsoidResult", strJson)
         local resultTab = json.decode(strJson, 1);
         local resultMsg = json.decode(resultTab.resultMsg, 1)
-        FishGI.Dapi:thirdLogin("baidu", resultMsg, loginCB)
-        local function callBackGetUserInfoResult( strJson )
-            print("--------callBackGetUserInfoResult", strJson)
-        end
-        --self:doGetUserInfo(callBackGetUserInfoResult)
+        loginCB(resultMsg)
     end
     local function callBackDoLogin( strJson )
         --self:doGetTokenAndSsoid(callBackGetTokenAndSsoidResult)
