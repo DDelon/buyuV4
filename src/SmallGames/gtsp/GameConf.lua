@@ -140,7 +140,7 @@ GameConf.PAY_CONFIG = {
         typeName = "mi",
     },
     mz = {
-        typeName = "mz",
+        typeName = "meizu",
     },
     oppo = {
         typeName = "oppo",
@@ -249,6 +249,8 @@ function GameConf:getPayData()
         jinli = {},
         lenovo = {},
         yyb = {},
+        samsung = {},
+        mz = {},
     }
 end
 
@@ -592,6 +594,12 @@ function GameConf:onThirdpayMi(payArgs, extendData)
 end
 
 function GameConf:onThirdpayMz(payArgs, extendData)
+    local payInfo = {}
+    payInfo.order = payArgs.orderid
+    payInfo.money = payArgs.money/100
+    payInfo.subject = payArgs.subject
+    payInfo.goods = payArgs.goods
+    return payInfo
 end
 
 function GameConf:onThirdpayOppo(payArgs, extendData)

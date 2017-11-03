@@ -191,7 +191,10 @@ SDKInterface.ChannelInfoList = {
     }
 }
 
-local luaj = require("cocos.cocos2d.luaj")
+local luaj = nil
+if device.platform == "android" then
+    luaj = require("cocos.cocos2d.luaj")
+end
 
 function SDKInterface:trySDKLogin(info, loginCB)
     assert("渠道登录接口未实现！")
@@ -249,6 +252,9 @@ function SDKInterface:loadGcsdk(strName, iType)
 end
 
 function SDKInterface:initGcsdk()
+    if device.platform == "windows" then
+        return
+    end
     if FishGF.isThirdSdkLogin() then 
         self:loadGcsdk("Login", 1)
     end 
