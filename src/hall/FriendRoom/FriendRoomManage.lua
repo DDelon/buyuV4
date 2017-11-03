@@ -106,9 +106,20 @@ function FriendRoomManage:sendCreateFriendRoom(propType,countType,timeType)
         roomPropType = propType,
         roomPeopleCountType = countType,
         roomDurationType = timeType,
-        appId = APP_ID
+        roomCardType = 1,
+        agent = true,
+
+        appId= APP_ID,
+        appKey = APP_KEY,
+        channelId = CHANNEL_ID,
+        version = table.concat(HALL_APP_VERSION,"."),
+        areaCode = REGION_CODE,
+        token = FishGI.hallScene.net:getSession(),
     }
+    print("--------send-------------MSGC2SCreateFriendRoom----------------")
+    dump(data)
     self:sendJMsg("MSGC2SCreateFriendRoom", data)
+
 end
 
 --加入朋友场

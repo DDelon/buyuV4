@@ -379,7 +379,10 @@ function HallLayer:onClickcheck( sender )
 end
 
 function HallLayer:onClickrank( sender )
-    FishGF.openRankWeb("https://userapi-fish.weile.com/fish/rank/", FishGI.hallScene);
+    --FishGF.openRankWeb("https://userapi-fish.weile.com/fish/rank/", FishGI.hallScene);
+    
+
+
 end
 
 function HallLayer:onClickshare( sender )

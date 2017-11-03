@@ -656,7 +656,14 @@ MSGC2SCreateFriendRoom = 104 {
 	roomPropType : int = 1;道具类型,0:不带怼人道具，1:带怼人道具
 	roomPeopleCountType : int = 2;人数类型，0:2人，1:3人，2:4人
 	roomDurationType : int = 3;时长类型,0:8分钟，1,24分钟
-	appId : string = 4;appId
+	roomCardType : int = 5;房卡类型 0,游戏内房卡，1，平台房卡
+	agent : bool = 6;是否代开，如果代开，roomCardType必须=1，即使用平台房卡
+	appId : string = 7;appid,使用平台房卡必须传
+	appKey : string = 8;appkey,使用平台房卡必须传
+	channelId : string = 9;channelId使用平台房卡必须传
+	version : string = 10;version,使用平台房卡必须传
+	areaCode : string = 11;地区码,使用平台房卡必须传
+	token : string = 12;token使用平台房卡必须传
 }
 
 MSGS2CCreateFriendRoom = 105 {

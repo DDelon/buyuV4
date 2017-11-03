@@ -7,7 +7,7 @@ if intType == 0 then
 else
 	local serverconfig = {}
 	serverconfig[1] = {url="192.168.67.6",port=6532};
-	serverconfig["RoomId"] = 113;
+	serverconfig["RoomId"] = 102;
 	return serverconfig;
 end
  

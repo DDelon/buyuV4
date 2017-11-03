@@ -8,7 +8,7 @@
     *在外部注册updateError监听器 接收版本检测失败的事件
     *在外部注册beginDownload监听器 接收开始下载的事件
 ]]
-local IS_LOCAL_NET_TEST = false
+local IS_LOCAL_NET_TEST = true
 local Update = class("Update")
 
 function Update.create()
