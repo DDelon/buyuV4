@@ -595,7 +595,7 @@ function FishGF.createCloseSocketNotice(str,index)
                 if FishGI.hallScene~= nil and FishGI.hallScene.net ~= nil and FishGI.hallScene.net.CloseSocket ~= nil then
                     FishGI.hallScene.net:CloseSocket();
                 end
-                curScene.view:changeAccount();              
+                --curScene.view:changeAccount();              
             elseif sceneName == "hall" then
                 FishGI.hallScene.net:CloseSocket();
                 FishGI.eventDispatcher:removeAllListener();
